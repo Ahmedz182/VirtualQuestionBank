@@ -56,7 +56,7 @@ const QuizAttempt = () => {
   }
 
   if (notFound) {
-    return <div>Quiz not found</div>;
+    return <div className="text-center p-10">Quiz not found..!</div>;
   }
 
   return (
