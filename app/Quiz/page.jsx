@@ -42,6 +42,7 @@ const Quiz = () => {
               desc,
               totalPlayed,
               subject,
+              difficulty,
             }) => (
               <QuizCard
                 key={_id}
@@ -53,6 +54,7 @@ const Quiz = () => {
                 mcq={questions.length}
                 desc={desc}
                 totalPlayed={totalPlayed}
+                difficulty={difficulty}
               />
             )
           )

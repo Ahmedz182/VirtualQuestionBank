@@ -11,6 +11,8 @@ import { message } from "antd";
 const AddQuestion = () => {
   const router = useRouter();
   useAuth();
+
+  const { TextArea } = Input;
   const [messageApi, contextHolder] = message.useMessage();
 
   const [Login, setLogin] = useState(false);
@@ -336,7 +338,10 @@ const AddQuestion = () => {
                           message: "Please enter the question title",
                         },
                       ]}>
-                      <Input placeholder="Enter Question Title Here." />
+                      <TextArea
+                        rows={3}
+                        placeholder="Enter Question Title Here."
+                      />
                     </Form.Item>
                     <Form.Item
                       name="option1"

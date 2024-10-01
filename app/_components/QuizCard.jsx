@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { LuMonitorPlay } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { TbUserShield } from "react-icons/tb";
 
 const QuizCard = ({
   title,
@@ -12,20 +13,21 @@ const QuizCard = ({
   totalPlayed,
   QuizId,
   subject,
+  difficulty,
 }) => {
   const router = useRouter();
 
   return (
     <>
-      <div className="bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] group ms-4 sm:ms-0 flex cursor-pointer items-center ga  w-[40dvw] sm:w-[95dvw] md:w-[80dvw]  bg-white   gap-y-5  pt-8  pb-5 rounded-xl   border border-1 border-text/10   transition ease-in">
-        <div className="ms-[-30px] flex flex-col justify-between md:hidden sm:hidden  w-[50dvw] h-[30dvh] md:h-[20dvh] group-hover:scale-110 grayscale group-hover:grayscale-0 transition ease-linear">
+      <div className=" bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] group ms-4 sm:ms-0 flex cursor-pointer items-center gap-2  w-[40dvw] sm:w-[95dvw] md:w-[80dvw]  bg-white   gap-y-5  pt-8  pb-5 rounded-xl   border border-1 border-text/10   transition ease-in ">
+        <div className="ms-[-30px] flex flex-col justify-between md:hidden sm:hidden   h-[20dvh] md:h-[20dvh] ">
           <Image
             src={img}
-            width={250}
+            width={450}
             alt="img"
             loading="lazy"
             height={220}
-            className="rounded-lg "
+            className="rounded-lg group-hover:scale-110 grayscale group-hover:grayscale-0 transition ease-linear"
           />
         </div>
         <div className="flex flex-col gap-2 md:ps-6 sm:ps-6 px-2 sm:w-[80dvw] ">
@@ -42,6 +44,13 @@ const QuizCard = ({
             <p className="font-medium text-text sm:text-sm">
               Total MCQs: <span>{mcq}</span>
             </p>
+
+            <span className="flex items-center gap-x-1">
+              {/* <TbUserShield className="text-text" />{" "} */}
+              <p className="font-medium text-text sm:text-sm">
+                Difficulty: <span>{difficulty}</span>
+              </p>
+            </span>
             <span className="flex items-center gap-x-1">
               <LuMonitorPlay className="text-text" />
               <p className="font-medium sm:text-sm line-clamp-1">
