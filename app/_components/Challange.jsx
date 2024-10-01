@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import challangepic from "../assets/images/challange.webp";
+import Link from "next/link";
 const Challange = () => {
   return (
     <>
@@ -12,10 +13,12 @@ const Challange = () => {
           <span className="text-2xl tracking-wider">
             Knowledge is Power, Quiz to Empower.
           </span>
-          <button className="bg-text p-3 text-white rounded-md transition duration-300 ease-out group relative">
-            Challenge Now
-            <span className="absolute inset-0 border-2 rounded-md border-transparent group-hover:border-text/80 group-hover:-inset-1 transition-all duration-300 ease-out pointer-events-none"></span>
-          </button>
+          <Link href="/Quiz">
+            <button className="bg-text p-3 text-white rounded-md transition duration-300 ease-out group relative">
+              Challenge Now
+              <span className="absolute inset-0 border-2 rounded-md border-transparent group-hover:border-text/80 group-hover:-inset-1 transition-all duration-300 ease-out pointer-events-none"></span>
+            </button>
+          </Link>
         </div>
 
         <div className="ms-[-70px] sm:ms-0">
