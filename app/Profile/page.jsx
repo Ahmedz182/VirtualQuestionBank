@@ -7,6 +7,7 @@ import maleAvatar from "@/public/images/male.png";
 import femaleAvatar from "@/public/images/female.png";
 import axios from "axios";
 import { ImSad } from "react-icons/im";
+import Link from "next/link";
 
 const Profile = () => {
   const [Login, setLogin] = useState(false);
@@ -124,17 +125,17 @@ const Profile = () => {
                 <div className="flex gap-5 justify-between  sm:flex-col">
                   <div className="drop-shadow-xl px-5 py-10 w-[48dvw] sm:w-[82dvw] bg-midnight rounded-xl cursor-pointer transition ease-in hover:scale-95 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]">
                     <p className=" text-xl text-white font-semibold flex justify-between gap-x-10">
-                      No. of Wins :{" "}
+                      No. of Wins 🎉 :
                       <span className="tracking-wide font-black text-3xl text-green">
-                        🎉{UserPerformance[0].Win}
+                        {UserPerformance[0].Win || 0}
                       </span>
                     </p>
                   </div>
                   <div className="drop-shadow-xl px-5 py-10  w-[48dvw] sm:w-[82dvw]  bg-tahiti rounded-xl cursor-pointer transition ease-in hover:scale-95 bg-[linear-gradient(to_right,#ffffff2a,transparent_1px),linear-gradient(to_bottom,#ffffff2a,transparent_1px)] bg-[size:24px_24px]">
                     <p className=" text-xl  font-semibold flex justify-between gap-x-10">
-                      No. of Losses :{" "}
+                      No. of Losses 😞 :
                       <span className="tracking-wide font-black text-3xl text-red ">
-                        {UserPerformance[0].loss}
+                        {UserPerformance[0].loss || 0}
                       </span>
                     </p>
                   </div>
@@ -146,9 +147,11 @@ const Profile = () => {
                 <p className=" text-2xl font-semibold text-text">
                   No data available Yet !!
                 </p>
-                <button className="bg-text text-silver px-3 py-2 font-medium py-1 rounded">
-                  Play Quiz
-                </button>
+                <Link href="/Quiz">
+                  <button className="bg-text text-silver px-3  font-medium py-1 rounded">
+                    Play Quiz
+                  </button>
+                </Link>
               </div>
             )}
           </div>
