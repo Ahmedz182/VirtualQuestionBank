@@ -1,7 +1,12 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { LuSearch } from "react-icons/lu";
+import { useRouter } from "next/navigation";
+
 const HeroSection = () => {
+  const [search, setSearch] = useState("");
+  const router = useRouter();
+
   return (
     <>
       <div className="  w-full  bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] flex md:flex-col sm:flex-col h-[90dvh] lg:h-[90dvh] bg-silver justify-around   ps-8 md:ps-4 sm:ps-0 pt-5 sm:py-5 md:py-10 overflow-hidden">
@@ -24,11 +29,18 @@ const HeroSection = () => {
                   <input
                     className="w-[40dvw] md:w-[58dvw] sm:w-[90dvw] bg-white   h-12 sm:h-10 md:h-10  outline-none md:text-sm sm:text-sm sm:ps-3 md:ps-1 ps-1 pe-2 sm:pe-0"
                     type="search"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
                     placeholder="Search Here (i.e Subject, Question)"
                     name="search"
                     id="search"
                   />
-                  <span className="bg-darkGreen cursor-pointer h-12 md:h-10 sm:h-10 w-16 p-3 flex items-center  justify-center rounded-br-lg rounded-tr-lg">
+                  <span
+                    onClick={() => {
+                      router.push(`/Quiz/search/${search}`);
+                    }}
+                    className="bg-darkGreen cursor-pointer h-12 md:h-10 sm:h-10 w-16 p-3 flex items-center  justify-center rounded-br-lg rounded-tr-lg">
                     <LuSearch className="text-white text-2xl md-text-xl sm:text-base" />
                   </span>
                 </div>

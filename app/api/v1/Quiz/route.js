@@ -11,7 +11,8 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const _id = searchParams.get("id");
-        const subject = searchParams.get("subject");  // Changed to lowercase 'subject'
+        const subject = searchParams.get("subject");
+        const search = searchParams.get("search");
 
         if (_id) {
             // Fetch a single quiz by its ID
@@ -22,8 +23,15 @@ export async function GET(req) {
             return NextResponse.json({ success: true, quiz }, { status: 200 });
         } else if (subject) {
             // Fetch quizzes based on the subject
-            console.log(subject);
             const quiz = await QuizModel.find({ subject }); // Use object format to query by subject
+            return NextResponse.json({ success: true, totalQuiz: quiz.length, quiz }, { status: 200 });
+        }
+        else if (search) {
+            // Fetch quizzes based on the subject
+            // Use a case-insensitive regular expression to search for the title
+            const quiz = await QuizModel.find({
+                title: { $regex: search, $options: 'i' } // 'i' for case-insensitive search
+            });// Use object format to query by subject
             return NextResponse.json({ success: true, totalQuiz: quiz.length, quiz }, { status: 200 });
         } else {
             // Fetch all quizzes if no specific ID or subject is provided
