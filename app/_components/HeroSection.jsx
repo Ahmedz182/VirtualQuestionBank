@@ -32,7 +32,7 @@ const HeroSection = () => {
                     onChange={(e) => {
                       setSearch(e.target.value);
                     }}
-                    placeholder="Search Here (i.e Subject, Question)"
+                    placeholder="Search Quiz here.."
                     name="search"
                     id="search"
                   />
