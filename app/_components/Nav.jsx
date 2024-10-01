@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
   LoginOutlined,
   UserAddOutlined,
@@ -21,6 +23,7 @@ const Nav = () => {
   const [UserDetal, setUserDetal] = useState(null || []);
   const [AdminDetal, setAdminDetal] = useState(null || []);
   const [Subject, setSubject] = useState([]);
+  const router = useRouter();
 
   const guestMenuItems = [
     {
@@ -215,6 +218,9 @@ const Nav = () => {
               {Subject.map(({ title }, index) => (
                 <li
                   key={`${index}`}
+                  onClick={() => {
+                    router.push(`/Quiz/subject/${title}`);
+                  }}
                   className="hover:text-black cursor-pointer"
                   style={{ whiteSpace: "nowrap" }}>
                   {title}

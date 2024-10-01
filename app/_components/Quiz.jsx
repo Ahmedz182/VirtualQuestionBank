@@ -114,7 +114,7 @@ const Quiz = ({ data }) => {
           <div className="flex items-center justify-center pe-5  py-5 ">
             <p
               className="bg-darkBlue rounded flex pe-4 items-center text-sm  text-white px-3 py-2 cursor-pointer"
-              onClick={() => router.push("/Quiz")}>
+              onClick={() => router.back()}>
               <FaAngleLeft />
               Back
             </p>

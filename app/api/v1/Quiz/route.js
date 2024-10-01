@@ -11,6 +11,7 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const _id = searchParams.get("id");
+        const subject = searchParams.get("subject");  // Changed to lowercase 'subject'
 
         if (_id) {
             // Fetch a single quiz by its ID
@@ -19,16 +20,21 @@ export async function GET(req) {
                 return NextResponse.json({ success: false, msg: "Quiz not found" }, { status: 404 });
             }
             return NextResponse.json({ success: true, quiz }, { status: 200 });
+        } else if (subject) {
+            // Fetch quizzes based on the subject
+            console.log(subject);
+            const quiz = await QuizModel.find({ subject }); // Use object format to query by subject
+            return NextResponse.json({ success: true, totalQuiz: quiz.length, quiz }, { status: 200 });
         } else {
-            // Fetch all quizzes
+            // Fetch all quizzes if no specific ID or subject is provided
             const quiz = await QuizModel.find();
             return NextResponse.json({ success: true, totalQuiz: quiz.length, quiz }, { status: 200 });
         }
-
     } catch (error) {
         console.error("Error fetching quizzes:", error);
         return NextResponse.json({ success: false, msg: "Error fetching quiz", error: error.message }, { status: 500 });
     }
+
 }
 
 export async function POST(req) {
@@ -58,6 +64,7 @@ export async function PUT(req) {
         const { searchParams } = new URL(req.url);
         const _id = searchParams.get("id");
         const updatePlayTime = searchParams.get("playTime");
+
 
         if (!_id) {
             return NextResponse.json({ success: false, msg: "Quiz ID is required." }, { status: 400 });
