@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import QuizCard from "@/app/_components/QuizCard";
 import Title from "@/app/_components/Title";
+import { Skeleton } from "antd";
 
 const SubjectId = () => {
   const { id } = useParams();
@@ -43,36 +44,40 @@ const SubjectId = () => {
           tagline={`Best Quiz According to ${subjectName}`}
         />
       </div>
-      <div className="flex flex-wrap gap-5 justify-around px-16 sm:px-4 bg-silver py-6 mb-16">
+      <div className="flex flex-wrap gap-5 items-center justify-around px-16 sm:px-4 min-h-[40dvh] bg-silver py-6 mb-16">
         {quizData ? (
-          quizData.map(
-            ({
-              _id,
-              title,
-              imgUrl,
-              tags,
-              questions,
-              desc,
-              totalPlayed,
-              subject,
-              difficulty,
-            }) => (
-              <QuizCard
-                key={_id}
-                QuizId={_id}
-                title={title}
-                subject={subject}
-                tag={tags}
-                img={imgUrl}
-                mcq={questions.length}
-                desc={desc}
-                totalPlayed={totalPlayed}
-                difficulty={difficulty}
-              />
+          quizData.length > 0 ? (
+            quizData.map(
+              ({
+                _id,
+                title,
+                imgUrl,
+                tags,
+                questions,
+                desc,
+                totalPlayed,
+                subject,
+                difficulty,
+              }) => (
+                <QuizCard
+                  key={_id}
+                  QuizId={_id}
+                  title={title}
+                  subject={subject}
+                  tag={tags}
+                  img={imgUrl}
+                  mcq={questions.length}
+                  desc={desc}
+                  totalPlayed={totalPlayed}
+                  difficulty={difficulty}
+                />
+              )
             )
+          ) : (
+            <p className="text-center">No quizzes found.</p> // Message when quizData is empty
           )
         ) : (
-          <p>Loading...</p>
+          <Skeleton /> // Shows skeleton loader while quizData is being fetched
         )}
       </div>
     </div>
