@@ -10,7 +10,22 @@ LoadDb();
 export async function POST(req) {
     const { searchParams } = new URL(req.url);
     const profile = searchParams.get("profile");
+    const UserCount = searchParams.get("UserCount"); // Fetch UserCount query parameter
+
     try {
+
+        if (UserCount === 'true') {
+            const totalUsers = await UserModel.countDocuments({});
+            return NextResponse.json(
+                {
+                    success: true,
+                    msg: "User Counts Fetched",
+                    user: totalUsers,
+                },
+                { status: 200 }
+            );
+        }
+
         const { email, password } = await req.json();
 
         if (!email && !password) {
@@ -35,6 +50,8 @@ export async function POST(req) {
                 );
             }
         }
+
+
 
 
         // const hashPass = await bcrypt.hash(password, 10);
