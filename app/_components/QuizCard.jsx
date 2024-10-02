@@ -21,22 +21,22 @@ const QuizCard = ({
   return (
     <>
       <div className=" bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] group ms-4 sm:ms-0 flex cursor-pointer items-center gap-2  w-[40dvw] sm:w-[95dvw] md:w-[80dvw]  bg-white   gap-y-5  pt-8  pb-5 rounded-xl   border border-1 border-text/10   transition ease-in ">
-        <div className="ms-[-30px] flex flex-col justify-between md:hidden sm:hidden min-w-[200px] min-h-[200px]    md:h-[20dvh] ">
+        <div className="ms-[-30px] flex flex-col justify-between md:hidden sm:hidden min-w-[180px] min-h-[200px]    md:h-[20dvh] ">
           <Image
             src={img || logo}
-            width={400}
+            width={320}
             alt="img"
             loading="lazy"
             height={0}
             className="rounded-lg group-hover:scale-110 grayscale group-hover:grayscale-0 transition ease-linear"
           />
         </div>
-        <div className="flex flex-col gap-2 md:ps-6 sm:ps-6 px-2 sm:w-[80dvw] ">
+        <div className="flex flex-col gap-1 md:ps-6 sm:ps-6 px-2 sm:w-[80dvw] ">
           <span>
-            <p className="text-2xl sm:text-xl font-semibold line-clamp-1 text-text">
+            <p className="text-xl sm:text-xl font-semibold line-clamp-1 text-text">
               {title}
             </p>
-            <p className="font-semibold text-black/50 sm:text-sm">
+            <p className="font-semibold text-sm text-black/50 sm:text-sm">
               Subject : <span className="font-bold">{subject}</span>
             </p>
           </span>
@@ -59,9 +59,11 @@ const QuizCard = ({
             </span>
           </span>
 
-          <p className="line-clamp-2 text-text/60 pe-3 sm:text-sm">{desc}</p>
+          <p className="line-clamp-2 text-text/60 pe-3 text-sm sm:text-sm">
+            {desc}
+          </p>
 
-          <div className="flex gap-x-1 overflow-hidden">
+          <div className="flex gap-x-1 overflow-hidden my-1">
             {tag.slice(1, 4).map((tag, index) => {
               return (
                 <p

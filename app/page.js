@@ -80,7 +80,7 @@ export default function Home() {
 
         {
           QuizDataLoad ? (
-            QuizData.slice(-5).map(
+            QuizData.slice(-10).map(
               ({ _id, title, imgUrl, tags, questions, desc, totalPlayed, subject, difficulty }) => (
                 <QuizCard
                   key={_id}
