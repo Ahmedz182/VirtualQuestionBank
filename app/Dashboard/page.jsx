@@ -6,7 +6,8 @@ import { MdOutlineDeleteForever } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import { Tooltip, Modal } from "antd";
-import logo from "@/public/images/logo.png";
+import logo from "@/public/images/default_img.jpg";
+
 import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import Loading from "../loading";
