@@ -3,7 +3,7 @@ import Image from "next/image";
 import { LuMonitorPlay } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { TbUserShield } from "react-icons/tb";
-import logo from "@/public/images/logo.png";
+import logo from "@/public/images/default_img.jpg";
 
 const QuizCard = ({
   title,
@@ -41,22 +41,21 @@ const QuizCard = ({
             </p>
           </span>
 
-          <span className="flex gap-x-10 text-text">
-            <p className="font-medium text-text sm:text-sm">
-              Total MCQs: <span>{mcq}</span>
+          <span className="flex gap-x-3 text-text">
+            <p className="font-medium text-text/80 sm:text-sm">
+              Total MCQs: <span className="text-text font-bold">{mcq}</span>
             </p>
 
             <span className="flex items-center gap-x-1">
               {/* <TbUserShield className="text-text" />{" "} */}
-              <p className="font-medium text-text sm:text-sm">
-                Difficulty: <span>{difficulty}</span>
+              <p className="font-medium text-text/80 sm:text-sm">
+                Difficulty:{" "}
+                <span className="text-text font-bold">{difficulty}</span>
               </p>
             </span>
             <span className="flex items-center gap-x-1">
               <LuMonitorPlay className="text-text" />
-              <p className="font-medium sm:text-sm line-clamp-1">
-                {totalPlayed}
-              </p>
+              <p className="font-bold sm:text-sm line-clamp-1">{totalPlayed}</p>
             </span>
           </span>
 

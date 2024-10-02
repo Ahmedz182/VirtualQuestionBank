@@ -99,7 +99,7 @@ const SearchId = () => {
               )
             )
           ) : (
-            <p className="text-center">No quizzes found.</p> // Message when quizData is empty
+            <p className="text-center">No Quiz found.</p> // Message when quizData is empty
           )
         ) : (
           <Skeleton /> // Shows skeleton loader while quizData is being fetched

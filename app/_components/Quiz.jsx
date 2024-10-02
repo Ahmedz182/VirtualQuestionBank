@@ -323,46 +323,10 @@ const Quiz = ({ data }) => {
       )}
       <div className="flex flex-col gap-5">
         <div className="flex flex-wrap gap-2 items-center px-10 ">
-          <p className="font-medium text-text text-xl sm:text-sm pe-5 flex ">
+          <p className="font-medium text-text text-xl sm:text-sm pe-2 flex pb-2">
             Share with Friends:
           </p>
           <ul className="flex gap-2   ">
-            <li className="cursor-pointer group text-text/90 text-xl hover:translate-y-[-5px] transition ease-in">
-              <FaShare
-                className="group-hover:text-black"
-                onClick={() => {
-                  const currentUrl = getCurrentUrl;
-
-                  if (typeof window !== "undefined" && navigator.clipboard) {
-                    // Clipboard API supported
-                    navigator.clipboard
-                      .writeText(currentUrl)
-                      .then(() => {
-                        alert("Link Copied");
-                      })
-                      .catch((err) => {
-                        console.error(
-                          "Failed to copy using Clipboard API: ",
-                          err
-                        );
-                      });
-                  } else {
-                    // Fallback for unsupported browsers
-                    const textArea = document.createElement("textarea");
-                    textArea.value = currentUrl;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                      document.execCommand("copy");
-                      alert("Link Copied");
-                    } catch (err) {
-                      console.error("Fallback: Failed to copy text", err);
-                    }
-                    document.body.removeChild(textArea);
-                  }
-                }}
-              />
-            </li>
             <li className="cursor-pointer text-text/90 text-xl group hover:translate-y-[-5px] transition ease-in">
               <FacebookShareButton
                 url="https://www.npmjs.com/package/react-share" // The URL you want to share

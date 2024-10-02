@@ -75,7 +75,7 @@ export default function Home() {
         }
 
       </div>
-      <Title title="Trending Quiz" tagline="Test Your Knowledge on Trending Topics Now!" />
+      <Title title="Recent Quiz" tagline="Test Your Knowledge on Recently added Quizes!" />
       <div className="flex flex-wrap gap-5 justify-around px-10 sm:px-4 bg-silver py-6">
 
         {

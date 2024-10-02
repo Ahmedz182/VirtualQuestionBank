@@ -41,7 +41,7 @@ const SubjectId = () => {
       <div>
         <Title
           title="Get what you need!"
-          tagline={`Best Quiz According to ${subjectName}`}
+          tagline={`Best Quiz According to "${subjectName}"`}
         />
       </div>
       <div className="flex flex-wrap gap-5 items-center justify-around px-16 sm:px-4 min-h-[40dvh] bg-silver py-6 mb-16">
@@ -74,7 +74,7 @@ const SubjectId = () => {
               )
             )
           ) : (
-            <p className="text-center">No quizzes found.</p> // Message when quizData is empty
+            <p className="text-center">No Quiz found.</p> // Message when quizData is empty
           )
         ) : (
           <Skeleton /> // Shows skeleton loader while quizData is being fetched

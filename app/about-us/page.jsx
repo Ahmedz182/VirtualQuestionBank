@@ -37,7 +37,7 @@ export default function About() {
           <h2 className="text-3xl font-semibold tracking-wider text-gray-800 mb-4 ">
             Our Features
           </h2>
-          <ul className="text-lg text-gray-700 space-y-4 list-disc list-inside  mx-auto">
+          <ul className="text-lg text-gray-700 space-y-4  ps-5  mx-auto">
             <li>
               <strong className="text-gray-900">Wide Range of Topics : </strong>
               Whether you&apos;re interested in science, history, technology, or
@@ -100,10 +100,9 @@ export default function About() {
             or follow us on social media.
           </p>
         </section>
-
-        <Challange />
-        <FAQSection />
       </div>
+      <Challange />
+      <FAQSection />
     </>
   );
 }
