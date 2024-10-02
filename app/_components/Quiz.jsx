@@ -9,7 +9,7 @@ import { ClockLoader } from "react-spinners";
 import Link from "next/link";
 import axios from "axios";
 import { Checkmark } from "react-checkmark";
-import { FaShare } from "react-icons/fa6";
+import logo from "@/public/images/default_img.jpg";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -127,7 +127,7 @@ const Quiz = ({ data }) => {
           </span>
         </div>
         <Image
-          src={data.imgUrl}
+          src={data.imgUrl || logo}
           width={120}
           alt="img"
           loading="lazy"
