@@ -41,7 +41,9 @@ const Quiz = () => {
         <span className="flex flex-col">
           <Title
             title="Explore Quiz"
-            tagline={`  There are total ${QuizData.length} Quiz Showing.`}
+            // tagline={`  There are total ${
+            //   QuizData.filter(handleFilterChange).length
+            // } Quiz Showing.`}
           />
         </span>
         <div className="flex flex-col sm:mb-5 justify-end ">

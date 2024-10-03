@@ -49,7 +49,8 @@ const SubjectId = () => {
           tagline={
             <>
               Best Quiz According to "{subjectName}"<br />
-              There are total "{quizData.length}" Quiz Showing.
+              {/* There are total "{quizData.filter(selectedDifficulty).length}" */}
+              Quiz Showing.
             </>
           }
         />
