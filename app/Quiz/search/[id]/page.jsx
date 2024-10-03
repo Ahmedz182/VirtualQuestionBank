@@ -8,13 +8,18 @@ import Title from "@/app/_components/Title";
 import { Skeleton } from "antd";
 import { LuSearch } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import Filter from "@/app/_components/Filter";
 
 const SearchId = () => {
   const { id } = useParams();
   const [quizData, setQuizData] = useState(null);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const [selectedDifficulty, setSelectedDifficulty] = useState("");
 
+  const handleFilterChange = (value) => {
+    setSelectedDifficulty(value);
+  };
   useEffect(() => {
     loadQuiz();
   }, [id]); // Removed extra comma after id
@@ -69,35 +74,41 @@ const SearchId = () => {
           </div>
         </div>
       </div>
+      <Filter onFilterChange={handleFilterChange} />
       <div className="flex flex-wrap gap-5 items-center justify-around px-16 sm:px-4 min-h-[40dvh] bg-silver py-6 mb-16">
         {quizData ? (
           quizData.length > 0 ? (
-            quizData.map(
-              ({
-                _id,
-                title,
-                imgUrl,
-                tags,
-                questions,
-                desc,
-                totalPlayed,
-                subject,
-                difficulty,
-              }) => (
-                <QuizCard
-                  key={_id}
-                  QuizId={_id}
-                  title={title}
-                  subject={subject}
-                  tag={tags}
-                  img={imgUrl}
-                  mcq={questions.length}
-                  desc={desc}
-                  totalPlayed={totalPlayed}
-                  difficulty={difficulty}
-                />
+            quizData
+              .filter(
+                ({ difficulty }) =>
+                  !selectedDifficulty || difficulty === selectedDifficulty
               )
-            )
+              .map(
+                ({
+                  _id,
+                  title,
+                  imgUrl,
+                  tags,
+                  questions,
+                  desc,
+                  totalPlayed,
+                  subject,
+                  difficulty,
+                }) => (
+                  <QuizCard
+                    key={_id}
+                    QuizId={_id}
+                    title={title}
+                    subject={subject}
+                    tag={tags}
+                    img={imgUrl}
+                    mcq={questions.length}
+                    desc={desc}
+                    totalPlayed={totalPlayed}
+                    difficulty={difficulty}
+                  />
+                )
+              )
           ) : (
             <p className="text-center">No Quiz found.</p> // Message when quizData is empty
           )

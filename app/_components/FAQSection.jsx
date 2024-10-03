@@ -47,13 +47,13 @@ const FAQSection = () => {
   ];
 
   return (
-    <div className="pb-10 px-8   flex md:flex-col sm:flex-col items-center   gap-12 text-text">
-      <div className="flex flex-col text-left w-[35dvw] items-center justify-center">
+    <div className="pb-10 px-8 sm:px-5   flex md:flex-col sm:flex-col items-center   gap-10 text-text">
+      <div className="flex flex-col text-left  px-10 sm:px-5  items-center justify-center">
         <p className="sm:text-4xl text-5xl font-extrabold  text-base-content tracking-wider">
           Frequently Asked Questions
         </p>
       </div>
-      <ul className=" px-16">
+      <ul className=" px-16 sm:px-8">
         {faqs.map((faq, index) => (
           <li key={index}>
             <button
