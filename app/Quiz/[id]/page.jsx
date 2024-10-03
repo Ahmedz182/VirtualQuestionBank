@@ -19,7 +19,7 @@ const QuizAttempt = () => {
   useEffect(() => {
     loadQuiz();
     loadSubject();
-  }, [id]);
+  }, []);
 
   const loadSubject = async () => {
     setSubjectLoading(true);

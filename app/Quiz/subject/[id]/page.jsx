@@ -18,7 +18,7 @@ const SubjectId = () => {
   };
   useEffect(() => {
     loadQuiz();
-  }, [id]); // Removed extra comma after id
+  }, []); // Removed extra comma after id
 
   // Log when quizData is updated
   useEffect(() => {
@@ -46,13 +46,7 @@ const SubjectId = () => {
       <div>
         <Title
           title="Get what you need!"
-          tagline={
-            <>
-              Best Quiz According to "{subjectName}"<br />
-              {/* There are total "{quizData.filter(selectedDifficulty).length}" */}
-              Quiz Showing.
-            </>
-          }
+          tagline={<>Best Quiz According to {subjectName}</>}
         />
       </div>
       <Filter onFilterChange={handleFilterChange} />

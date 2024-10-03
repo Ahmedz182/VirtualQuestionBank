@@ -22,7 +22,7 @@ const SearchId = () => {
   };
   useEffect(() => {
     loadQuiz();
-  }, [id]); // Removed extra comma after id
+  }, []); // Removed extra comma after id
 
   // Log when quizData is updated
   useEffect(() => {
