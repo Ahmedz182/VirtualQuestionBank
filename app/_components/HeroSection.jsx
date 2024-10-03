@@ -24,8 +24,8 @@ const HeroSection = () => {
               Engage Educate & Elevate your mind.
             </p>
             <span className="flex flex-col gap-8 sm:gap-4 md:gap-6">
-              <div className="flex sm:mt-5">
-                <div className="flex h-12 md:h-10 sm:h-10 w-[40dvw] md:w-[58dvw] sm:w-[90dvw]   shadow-inner outline outline-1 outline-text/20 bg-white rounded-lg ps-4 sm:ps-3 md:ps-3 ">
+              <div className="flex sm:mt-5 ">
+                <div className="flex h-12 md:h-10 sm:h-10  shadow-inner outline outline-1 outline-text/20 bg-white rounded-lg ps-4 sm:ps-3 md:ps-3 ">
                   <input
                     className="w-[40dvw] md:w-[58dvw] sm:w-[90dvw] bg-white   h-12 sm:h-10 md:h-10  outline-none md:text-sm sm:text-sm sm:ps-3 md:ps-1 ps-1 pe-2 sm:pe-0"
                     type="search"

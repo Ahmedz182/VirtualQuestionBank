@@ -37,24 +37,18 @@ const Quiz = () => {
   };
   return (
     <>
-      <div className="flex justify-between items-center pe-6 sm:flex-col md:flex-col  sm:justify-start sm:items-start sm:px-10">
-        <span className="flex flex-col">
-          <Title
-            title="Explore Quiz"
-            // tagline={`  There are total ${
-            //   QuizData.filter(handleFilterChange).length
-            // } Quiz Showing.`}
-          />
-        </span>
-        <div className="flex flex-col sm:mb-5 justify-end ">
-          <div className="flex h-12 md:h-10 sm:h-10 w-[40dvw] md:w-[58dvw] sm:w-[100dvw]   shadow-inner outline outline-1 outline-text/20 bg-white rounded-lg ps-4 sm:ps-3 md:ps-3 ">
+      <div className="flex justify-between items-center pe-5 sm:flex-col">
+        <Title title="Explore QUiz" />
+
+        <div className="flex sm:my-2 ">
+          <div className="flex h-12 md:h-10 sm:h-10  shadow-inner outline outline-1 outline-text/20 bg-white rounded-lg ps-4 sm:ps-3 md:ps-3 ">
             <input
-              className="w-[40dvw] md:w-[58dvw] sm:w-[100dvw] bg-white   h-12 sm:h-10 md:h-10  outline-none md:text-sm sm:text-sm sm:ps-3 md:ps-1 ps-1 pe-2 sm:pe-0"
+              className="w-[40dvw] md:w-[58dvw] sm:w-[90dvw] bg-white   h-12 sm:h-10 md:h-10  outline-none md:text-sm sm:text-sm sm:ps-3 md:ps-1 ps-1 pe-2 sm:pe-0"
               type="search"
               onChange={(e) => {
                 setSearch(e.target.value);
               }}
-              placeholder="Search Quiz here"
+              placeholder="Search Quiz here.."
               name="search"
               id="search"
             />
