@@ -1,6 +1,5 @@
 "use client";
 
-import Title from "@/app/_components/Title";
 import React from "react";
 import SubjectId from "./[id]/page";
 

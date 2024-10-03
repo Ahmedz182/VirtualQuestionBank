@@ -66,18 +66,22 @@ const UpdateQuestion = () => {
       setDemoSubjects(response.data.subjects);
       setdataloaded(true);
     };
+
     const loadQuiz = async () => {
       const response = await axios.get(`/api/v1/Quiz?id=${params.id}`);
       setQuiz(response.data.quiz);
       console.log(response.data.quiz);
     };
+
     const checkLogin = localStorage.getItem("Login");
     checkLogin ? setLogin(true) : setLogin(false);
+
     loadSubject();
     loadQuiz();
+
     const Adminname = localStorage.getItem("role");
     setcreatedBy(Adminname);
-  }, []);
+  }, [params.id]); // Add params.id to the dependency array
 
   const handleDelete = (index) => {
     Modal.confirm({
