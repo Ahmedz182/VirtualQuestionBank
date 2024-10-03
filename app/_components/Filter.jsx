@@ -9,7 +9,7 @@ const Filter = ({ onFilterChange }) => {
 
   return (
     <>
-      <div className="flex justify-between px-10 sm:pe-3 sm:ps-8">
+      <div className="flex justify-between px-10 sm:pe-3 sm:ps-8 my-2">
         <p className="text-text text-lg flex items-center gap-2">
           Filter
           <LuSettings2 className="ri-equalizer-line text-text"></LuSettings2>
