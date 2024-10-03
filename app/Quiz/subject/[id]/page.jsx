@@ -49,7 +49,7 @@ const SubjectId = () => {
           tagline={
             <>
               Best Quiz According to "{subjectName}"<br />
-              There are total "{quizData.length}" Quizzes Showing.
+              There are total "{quizData.length}" Quiz Showing.
             </>
           }
         />
