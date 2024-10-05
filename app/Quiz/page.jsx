@@ -38,7 +38,7 @@ const Quiz = () => {
   return (
     <>
       <div className="flex justify-between items-center pe-5 sm:flex-col">
-        <Title title="Explore QUiz" />
+        <Title title="Explore Quiz" />
 
         <div className="flex sm:my-2 ">
           <div className="flex h-12 md:h-10 sm:h-10  shadow-inner outline outline-1 outline-text/20 bg-white rounded-lg ps-4 sm:ps-3 md:ps-3 ">

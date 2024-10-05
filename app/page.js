@@ -10,7 +10,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from 'antd';
 import Challange from "./_components/Challange";
-
+import { useRouter } from "next/navigation";
 export default function Home() {
 
 
@@ -18,6 +18,7 @@ export default function Home() {
   const [SubjectDataLoad, setSubjectDataLoad] = useState(false)
   const [QuizData, setQuizData] = useState([])
   const [QuizDataLoad, setQuizDataLoad] = useState(false)
+  const router = useRouter();
 
   const loadSubject = async () => {
     try {
@@ -76,34 +77,40 @@ export default function Home() {
 
       </div>
       <Title title="Recent Quiz" tagline="Test Your Knowledge on Recently added Quizes!" />
-      <div className="flex flex-wrap gap-5 justify-around px-10 sm:px-4 bg-silver py-6">
+      <div className="flex flex-col justify-center items-center gap-y-5">
+        <div className="flex flex-wrap gap-5 justify-around px-10 sm:px-4 bg-silver py-6">
 
-        {
-          QuizDataLoad ? (
-            QuizData.slice(-10).map(
-              ({ _id, title, imgUrl, tags, questions, desc, totalPlayed, subject, difficulty }) => (
-                <QuizCard
-                  key={_id}
-                  QuizId={_id}
-                  title={title}
-                  subject={subject}
-                  tag={tags}
-                  img={imgUrl}
-                  mcq={questions.length}
-                  desc={desc}
-                  totalPlayed={totalPlayed}
-                  difficulty={difficulty}
-                />
+          {
+            QuizDataLoad ? (
+              QuizData.slice(-10).map(
+                ({ _id, title, imgUrl, tags, questions, desc, totalPlayed, subject, difficulty }) => (
+                  <QuizCard
+                    key={_id}
+                    QuizId={_id}
+                    title={title}
+                    subject={subject}
+                    tag={tags}
+                    img={imgUrl}
+                    mcq={questions.length}
+                    desc={desc}
+                    totalPlayed={totalPlayed}
+                    difficulty={difficulty}
+                  />
+                )
               )
+
+            ) : (
+
+              <Skeleton />
             )
+          }
 
-          ) : (
 
-            <Skeleton />
-          )
-        }
+        </div>
+        {QuizDataLoad && <p className=" cursor-pointer hover:bg-green/50 p-2 rounded px-4 transition ease-in " onClick={() => {
+          router.push("/Quiz")
+        }}>View More</p>}
       </div>
-
       <Challange />
       <Title title="FAQ" tagline="Quick Answers to Common Questions" />
       <FAQSection />
