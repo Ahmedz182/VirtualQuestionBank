@@ -8,12 +8,13 @@ import { useRouter } from "next/navigation";
 import { Tooltip, Modal } from "antd";
 import logo from "@/public/images/default_img.jpg";
 import { Menu } from "antd";
-import { HomeOutlined, DiffOutlined } from "@ant-design/icons";
+import { HomeOutlined, DiffOutlined, UserAddOutlined } from "@ant-design/icons";
 
 import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import Loading from "../loading";
 import { message } from "antd";
+import AddUser from "./AddUser/page";
 
 const Dashboard = () => {
   const items = [
@@ -33,6 +34,11 @@ const Dashboard = () => {
       key: "subject",
       icon: <DiffOutlined />,
     },
+    {
+      label: "Add User",
+      key: "user",
+      icon: <UserAddOutlined />,
+    },
   ];
   const [current, setCurrent] = useState("dashboard");
   const onClick = (e) => {
@@ -41,6 +47,7 @@ const Dashboard = () => {
   };
 
   const [quizzes, setQuizzes] = useState([]);
+  const [AdminDetal, setAdminDetal] = useState(null);
   const [Login, setLogin] = useState(false);
   const [Apiquiz, setApiQuiz] = useState([] || null);
   const [ApiUser, setApiUser] = useState([] || null);
@@ -55,6 +62,15 @@ const Dashboard = () => {
     dataLoadUser();
     const checkLogin = localStorage.getItem("Login");
     checkLogin ? setLogin(true) : setLogin(false);
+    const adminDetails = localStorage.getItem("adminDetail");
+    if (adminDetails) {
+      try {
+        const parsedDetails = JSON.parse(adminDetails);
+        setAdminDetal(parsedDetails);
+      } catch (error) {
+        console.error("Error parsing user details:", error);
+      }
+    }
   }, []);
   const dataLoad = async () => {
     try {
@@ -132,7 +148,7 @@ const Dashboard = () => {
             Dashboard
           </p>
           <Menu
-            className="px-10 mb-10"
+            className="px-10 mb-5 sm:px-5"
             onClick={onClick}
             selectedKeys={[current]}
             mode="horizontal"
@@ -141,7 +157,37 @@ const Dashboard = () => {
 
           <div className="text-text flex flex-col">
             {current == "dashboard" && (
-              <div className="min-h-[40dvh]">
+              <div className="min-h-[40dvh] px-10 sm:px-7">
+                <div className="flex sm:flex-col bg-midnight text-white px-12 mx-2 sm:mx-0   p-5 sm:px-2 rounded-lg items-center justify-between sm:justify-start">
+                  <span className="flex gap-5 items-center">
+                    <p className="text-xl">
+                      Welcome Back 👋
+                      <br />
+                      <span className="font-semibold">
+                        {AdminDetal.name || "Admin"} !
+                      </span>
+                      <br />
+                      <span className="text-base">
+                        {AdminDetal.email || "admin@admin.com"}
+                      </span>
+                    </p>
+                  </span>
+
+                  <span className="sm:hidden me-4">
+                    <p className="font-medium">
+                      {new Date().toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                      <br />
+                      {new Date().toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
+                    </p>
+                  </span>
+                </div>
                 <div className="flex flex-wrap justify-center gap-3 mx-3 my-2 mb-5 ">
                   <div className="flex gap-5 justify-between  sm:flex-col">
                     <div className="drop-shadow-xl px-5 py-10 w-[30dvw] sm:w-[82dvw] bg-midnight rounded-xl cursor-pointer transition ease-in hover:scale-95 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]">
@@ -309,6 +355,8 @@ const Dashboard = () => {
                 </div>
               </>
             )}
+
+            {current == "user" && <AddUser />}
           </div>
         </>
       ) : (
