@@ -5,6 +5,7 @@ import { FaFacebook } from "react-icons/fa6";
 import { GrInstagram } from "react-icons/gr";
 import { FaGithub } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -24,8 +25,12 @@ const Footer = () => {
             </p>
           </span>
           <ul className="flex flex-col  text-lg text-text/90 gap-y-2 font-medium  ">
-            <li className="cursor-pointer">About Us</li>
-            <li className="cursor-pointer  ">Contact Us</li>
+            <Link href="/about-us">
+              <li className="cursor-pointer">About Us</li>
+            </Link>
+            <Link href="/contact-us">
+              <li className="cursor-pointer  ">Contact Us</li>
+            </Link>
             <li className="cursor-pointer ">Privacy Policy</li>
             <li className="cursor-pointer">Terms & Condition</li>
           </ul>
@@ -37,21 +42,41 @@ const Footer = () => {
             </p>
           </span>
 
-          <ul className="flex   gap-x-4 font-medium  ">
+          <ul className="flex gap-x-4 font-medium">
             <li className="cursor-pointer text-text/90 text-2xl group hover:scale-110 transition ease-in">
-              <FaFacebook className="group-hover:text-[#1877F2]" />
+              <a
+                href="https://www.facebook.com/ahmedx182"
+                target="_blank"
+                rel="noopener noreferrer">
+                <FaFacebook className="group-hover:text-[#1877F2]" />
+              </a>
             </li>
 
-            <li className="cursor-pointer group  text-text/90 text-2xl hover:scale-110 transition ease-in ">
-              <GrInstagram className="group-hover:text-[#C13584]" />
+            <li className="cursor-pointer text-text/90 text-2xl group hover:scale-110 transition ease-in">
+              <a
+                href="https://www.instagram.com/ahmedz182"
+                target="_blank"
+                rel="noopener noreferrer">
+                <GrInstagram className="group-hover:text-[#C13584]" />
+              </a>
             </li>
 
-            <li className="cursor-pointer group text-text/90 text-2xl hover:scale-110 transition ease-in">
-              <FaGithub className="group-hover:text-black" />
+            <li className="cursor-pointer text-text/90 text-2xl group hover:scale-110 transition ease-in">
+              <a
+                href="https://github.com/ahmedz182"
+                target="_blank"
+                rel="noopener noreferrer">
+                <FaGithub className="group-hover:text-black" />
+              </a>
             </li>
 
-            <li className="cursor-pointer group text-text/90 text-2xl hover:scale-110 transition ease-in">
-              <FaWhatsapp className="group-hover:text-[#075E54]" />
+            <li className="cursor-pointer text-text/90 text-2xl group hover:scale-110 transition ease-in">
+              <a
+                href={`https://wa.me/923246983182`}
+                target="_blank"
+                rel="noopener noreferrer">
+                <FaWhatsapp className="group-hover:text-[#075E54]" />
+              </a>
             </li>
           </ul>
           <p className="text-lg text-text/90 gap-y-2 font-medium">

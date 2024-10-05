@@ -1,7 +1,7 @@
 import React from "react";
 import FAQSection from "@/app/_components/FAQSection";
 import Challange from "@/app/_components/Challange";
-
+import Link from "next/link";
 export const metadata = {
   title: "About Us - Virtual Question Bank",
   description: "Unlock your Potential with every Question.",
@@ -97,7 +97,13 @@ export default function About() {
               href="mailto : ahmedmughal3182@gmail.com">
               Email Us
             </a>{" "}
-            or follow us on social media.
+            or
+            <Link href="/contact-us">
+              <span className="text-darkGreen font-medium underline">
+                Contact Us
+              </span>
+            </Link>
+            follow us on social media.
           </p>
         </section>
       </div>

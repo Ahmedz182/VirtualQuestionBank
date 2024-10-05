@@ -240,9 +240,11 @@ const Nav = () => {
             About Us
           </li>
         </Link>
-        <li className="cursor-pointer hover:translate-y-[-5px] ease-in transition">
-          Contact Us
-        </li>
+        <Link href="/contact-us">
+          <li className="cursor-pointer hover:translate-y-[-5px] ease-in transition">
+            Contact Us
+          </li>
+        </Link>
       </ul>
 
       <div className="flex gap-x-5 sm:gap-4 items-center">
