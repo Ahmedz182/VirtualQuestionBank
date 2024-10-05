@@ -47,16 +47,16 @@ const SocialLinks = () => {
 
 const ContactUs = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-text p-10">
+    <div className="min-h-screen flex items-center justify-center  p-10">
       <div className="bg-white rounded-lg shadow-lg flex  sm:flex-col md:flex-col max-w-4xl w-full">
         <div className="relative w-1/2 sm:w-full ">
           <div
-            className="h-full  bg-text rounded-t-lg md:rounded-l-lg"
+            className="h-full sm:hidden md:hidden bg-text rounded-t-lg md:rounded-l-lg"
             style={{
               backgroundImage: `url(${phone.src})`,
               backgroundSize: "cover",
             }}>
-            <div className="absolute bottom-10 left-24 backdrop-blur-lg bg-blwhiteack/30 p-4 rounded border border-white/20">
+            <div className="absolute sm:hidden md:hidden bottom-10 left-24 backdrop-blur-lg bg-white/20 p-4 rounded border border-white/20">
               <p className="text-text text-xl pb-5 text-center">
                 Follow us on Social Media
               </p>
@@ -65,7 +65,7 @@ const ContactUs = () => {
           </div>
         </div>
 
-        <div className="w-1/2 sm:w-full  p-8">
+        <div className="w-1/2 sm:w-full md:w-full  p-8">
           <h2 className="text-2xl font-bold mb-6 text-text">
             Get in Touch With Us
           </h2>
