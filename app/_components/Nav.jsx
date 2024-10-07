@@ -9,7 +9,11 @@ import {
   UserOutlined,
   PieChartOutlined,
 } from "@ant-design/icons";
-import { RiAccountPinCircleLine, RiMenu4Fill } from "react-icons/ri";
+import {
+  RiAccountPinCircleLine,
+  RiMenu4Fill,
+  RiMenu3Fill,
+} from "react-icons/ri";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "/public/images/logo.png";
@@ -24,6 +28,21 @@ const Nav = () => {
   const [AdminDetal, setAdminDetal] = useState(null || []);
   const [Subject, setSubject] = useState([]);
   const router = useRouter();
+
+  const categoryItems = Subject.map(({ title }, index) => ({
+    label: (
+      <span
+        className="hover:text-black cursor-pointer"
+        onClick={() => router.push(`/Quiz/subject/${title}`)}>
+        {title}
+      </span>
+    ),
+    key: index,
+  }));
+
+  const Subjectmenu = {
+    items: categoryItems,
+  };
 
   const guestMenuItems = [
     {
@@ -253,16 +272,26 @@ const Nav = () => {
             Practice Now
           </button>
         </Link>
-        <span className="flex gap-3 sm:gap-1">
-          {/* <MdOutlineNightsStay className="text-text text-3xl cursor-pointer hover:scale-105 ease-linear transition" /> */}
-          <Dropdown menu={{ items: menu }}>
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>
-                <RiAccountPinCircleLine className="text-text text-3xl cursor-pointer hover:scale-105 ease-linear transition" />
-              </Space>
-            </a>
-          </Dropdown>
-          <RiMenu4Fill className="text-text text-3xl lg:hidden md:block sm:block hidden cursor-pointer hover:scale-105 ease-linear transition" />
+        <span className="flex items-center gap-2">
+          <span className="sm:flex md:flex gap-2 sm:gap-1 hidden ">
+            <Dropdown menu={Subjectmenu}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <RiMenu3Fill className="text-text text-2xl cursor-pointer hover:scale-105 ease-linear transition" />
+                </Space>
+              </a>
+            </Dropdown>
+          </span>
+          <span className="flex gap-3 sm:gap-1">
+            <Dropdown menu={{ items: menu }}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <RiAccountPinCircleLine className="text-text text-3xl cursor-pointer hover:scale-105 ease-linear transition" />
+                </Space>
+              </a>
+            </Dropdown>
+            <RiMenu4Fill className="text-text text-3xl lg:hidden md:block sm:block hidden cursor-pointer hover:scale-105 ease-linear transition" />
+          </span>
         </span>
       </div>
     </div>
