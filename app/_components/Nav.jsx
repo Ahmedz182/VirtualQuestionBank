@@ -232,7 +232,7 @@ const Nav = () => {
             Subjects <span className="w-1"></span>
             <FaAngleDown className="text-text text-sm" />
           </span>
-          <span className="absolute sub-menu hidden group-hover:flex bg-lightGreen px-5 py-2 top-full left-0 rounded-lg mt-1 shadow-lg">
+          <span className="absolute sub-menu hidden group-hover:flex bg-white px-5 py-2 top-full left-0 rounded-lg mt-1 shadow-lg">
             <ul className="flex flex-col gap-3">
               {Subject.map(({ title }, index) => (
                 <li
