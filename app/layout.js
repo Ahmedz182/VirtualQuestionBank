@@ -18,9 +18,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-        <meta name="google-adsense-account" content="ca-pub-8622346357576754" />
-
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8622346357576754"
+          crossOrigin="anonymous"
+        ></script>
       </Head>
+
       <body className={outfit.className}>
         <header>
           <Nav />
