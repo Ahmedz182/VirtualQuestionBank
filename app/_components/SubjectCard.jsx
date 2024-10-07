@@ -18,7 +18,7 @@ const SubjectCard = ({ title, desc, img }) => {
             alt={title}
             width={240}
             height={100}
-            className=" shadow-md rounded-2xl h-[130px] sm:h-[30dvh] sm:w-[85dvw] group-hover:scale-105 transition ease-in"
+            className=" shadow-md rounded-2xl h-[130px] sm:h-[18dvh] sm:w-[85dvw] group-hover:scale-105 transition ease-in "
           />
         </span>
         <div className="flex flex-col gap-y-2 text-text px-3 pb-1">
