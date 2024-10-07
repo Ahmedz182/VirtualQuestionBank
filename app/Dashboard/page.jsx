@@ -5,15 +5,15 @@ import Image from "next/image";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import { useRouter } from "next/navigation";
-import { Tooltip, Modal } from "antd";
 import logo from "@/public/images/default_img.jpg";
 import { Menu } from "antd";
+import { Modal, Form, Input, message, Tooltip } from "antd";
+
 import { HomeOutlined, DiffOutlined, UserAddOutlined } from "@ant-design/icons";
 
 import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import Loading from "../loading";
-import { message } from "antd";
 import AddUser from "./AddUser/page";
 
 const Dashboard = () => {
@@ -40,6 +40,7 @@ const Dashboard = () => {
       icon: <UserAddOutlined />,
     },
   ];
+
   const [current, setCurrent] = useState("dashboard");
   const onClick = (e) => {
     console.log("click ", e);
@@ -55,6 +56,58 @@ const Dashboard = () => {
   useAuth();
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [subjectId, setSubjectId] = useState(null);
+  const [form] = Form.useForm(); // Correct initialization of form
+
+  // Function to handle form submission and PUT request
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields(); // Get form values
+      setLoading(true);
+
+      // Send PUT request to update the subject by id
+      await axios.put(`/api/v1/Subject/?id=${subjectId}`, values);
+
+      message.success("Subject updated successfully!");
+      setIsVisible(false); // Close the modal after successful update
+      dataLoadSubject(); // Reload subjects after updating
+    } catch (error) {
+      console.error("Error updating subject:", error);
+      message.error("Failed to update subject.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to handle modal open and load subject details
+  const EditSubject = async (id) => {
+    try {
+      const response = await axios.get(`/api/v1/Subject?id=${id}`);
+      const subjectData = response.data.subject; // Assuming 'subject' is the object from the response
+
+      // Set form fields with subject data
+      form.setFieldsValue({
+        title: subjectData.title,
+        desc: subjectData.desc,
+        imgUrl: subjectData.imgUrl || "", // Optional field
+      });
+
+      setSubjectId(id); // Store the subject ID for updating
+      setIsVisible(true); // Show the modal
+    } catch (error) {
+      console.error("Error fetching subject:", error);
+      message.error("Failed to fetch subject data.");
+    }
+  };
+
+  // Close the modal
+  const onClose = () => {
+    setIsVisible(false);
+    form.resetFields(); // Reset form fields when the modal is closed
+  };
 
   useEffect(() => {
     dataLoad();
@@ -89,6 +142,16 @@ const Dashboard = () => {
       messageApi.success("Quiz Deleted Successfully.");
     } catch (error) {
       console.error("Error Deleting quiz:", error);
+    }
+  };
+  const DelSubject = async (id) => {
+    try {
+      const response = await axios.delete(`/api/v1/Subject?id=${id}`);
+      console.log(response);
+      setApiSubject(ApiSubject.filter((subject) => subject._id !== id));
+      messageApi.success("subject Deleted Successfully.");
+    } catch (error) {
+      console.error("Error subject quiz:", error);
     }
   };
 
@@ -128,6 +191,15 @@ const Dashboard = () => {
       },
     });
   };
+  const handleDeleteSubject = (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this Subject?",
+      content: "This action cannot be undone.",
+      onOk: () => {
+        DelSubject(id);
+      },
+    });
+  };
 
   const handleEdit = (id) => {
     Modal.confirm({
@@ -138,6 +210,34 @@ const Dashboard = () => {
       },
     });
   };
+
+  const handleEditSubject = (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to Edit this Subject?",
+      // content: "This action cannot be undone.",
+      onOk: () => {
+        EditSubject(id);
+      },
+    });
+  };
+
+  // Function to handle form submission and PUT request
+  // const handleSave = async () => {
+  //   try {
+  //     const values = await form.validateFields();
+  //     setLoading(true);
+
+  //     await axios.put(`/api/v1/Subject?id=${subjectId}`, values);
+
+  //     message.success("Subject updated successfully!");
+  //     onClose(); // Close the modal after successful update
+  //   } catch (error) {
+  //     console.error("Error updating subject:", error);
+  //     message.error("Failed to update subject.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <>
@@ -336,14 +436,14 @@ const Dashboard = () => {
                           <Tooltip title="Edit">
                             <GrEdit
                               className="text-text text-xl hover:font-semibold transition ease-in"
-                              onClick={() => handleEdit(subject._id)}
+                              onClick={() => handleEditSubject(subject._id)}
                             />
                           </Tooltip>
 
                           <Tooltip title="Delete">
                             <MdOutlineDeleteForever
                               className="text-red text-2xl hover:font-semibold transition ease-in"
-                              onClick={() => handleDelete(subject._id)}
+                              onClick={() => handleDeleteSubject(subject._id)}
                             />
                           </Tooltip>
                         </div>
@@ -353,6 +453,45 @@ const Dashboard = () => {
                     <p>No Subject Data available</p>
                   )}
                 </div>
+
+                <Modal
+                  title="Edit Subject"
+                  visible={isVisible}
+                  onOk={handleSave}
+                  onCancel={onClose}
+                  confirmLoading={loading}>
+                  <Form form={form} layout="vertical">
+                    <Form.Item
+                      label="Title"
+                      name="title"
+                      rules={[
+                        { required: true, message: "Please input the title!" },
+                      ]}>
+                      <Input placeholder="Enter the title" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Description"
+                      name="desc"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input the description!",
+                        },
+                      ]}>
+                      <Input.TextArea placeholder="Enter the description" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Image URL"
+                      name="imgUrl" // Ensure this matches the name used in setFieldsValue
+                      rules={[
+                        { type: "url", message: "Please enter a valid URL!" },
+                      ]}>
+                      <Input placeholder="Enter the image URL (optional)" />
+                    </Form.Item>
+                  </Form>
+                </Modal>
               </>
             )}
 

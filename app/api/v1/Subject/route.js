@@ -8,9 +8,27 @@ const LoadDb = async () => {
 LoadDb();
 
 export async function GET(req) {
+    const { searchParams } = new URL(req.url);
+    const _id = searchParams.get("id");
+
     try {
-        const subjects = await SubjectModel.find();
-        return NextResponse.json({ success: true, totalSubject: subjects.length, subjects }, { status: 200 });
+        // If no id is provided, return all subjects
+        if (!_id) {
+            const subjects = await SubjectModel.find();
+            return NextResponse.json({ success: true, totalSubjects: subjects.length, subjects }, { status: 200 });
+        }
+
+        // If id is provided, find the subject by id
+        const subject = await SubjectModel.findById(_id);
+
+        // If the subject does not exist, return 404
+        if (!subject) {
+            return NextResponse.json({ success: false, msg: "Subject not found" }, { status: 404 });
+        }
+
+        // Return the specific subject
+        return NextResponse.json({ success: true, subject }, { status: 200 });
+
     } catch (error) {
         console.error("Error fetching subjects:", error);
         return NextResponse.json({ success: false, msg: "Error fetching subjects" }, { status: 500 });
@@ -55,5 +73,32 @@ export async function DELETE(req) {
     } catch (error) {
         console.error("Error Deleting subject:", error);
         return NextResponse.json({ success: false, msg: "Error Deleting subject" }, { status: 500 });
+    }
+}
+
+export async function PUT(req) {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    const body = await req.json();
+
+    console.log("Updating Subject with ID:", id);
+    const updatedData = {
+        title: body.title,
+        desc: body.desc,
+        imgUrl: body.imgUrl,
+    };
+
+    try {
+        const updatedSubject = await SubjectModel.findByIdAndUpdate(id, updatedData, { new: true });
+
+        if (!updatedSubject) {
+            return NextResponse.json({ success: false, msg: "Subject not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, msg: "Subject Updated", updatedSubject }, { status: 200 });
+    } catch (error) {
+        console.error("Error updating subject:", error);
+        return NextResponse.json({ success: false, msg: "Error updating subject" }, { status: 500 });
     }
 }
