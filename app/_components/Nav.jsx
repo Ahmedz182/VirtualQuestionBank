@@ -273,15 +273,6 @@ const Nav = () => {
           </button>
         </Link>
         <span className="flex items-center gap-2">
-          <span className="sm:flex md:flex gap-2 sm:gap-1 hidden ">
-            <Dropdown menu={Subjectmenu}>
-              <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <RiMenu3Fill className="text-text text-2xl cursor-pointer hover:scale-105 ease-linear transition" />
-                </Space>
-              </a>
-            </Dropdown>
-          </span>
           <span className="flex gap-3 sm:gap-1">
             <Dropdown menu={{ items: menu }}>
               <a onClick={(e) => e.preventDefault()}>
@@ -291,6 +282,15 @@ const Nav = () => {
               </a>
             </Dropdown>
             <RiMenu4Fill className="text-text text-3xl lg:hidden md:block sm:block hidden cursor-pointer hover:scale-105 ease-linear transition" />
+          </span>
+          <span className="sm:flex md:flex gap-2 sm:gap-1 hidden ">
+            <Dropdown menu={Subjectmenu}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <RiMenu3Fill className="text-text text-2xl  cursor-pointer hover:scale-105 ease-linear transition" />
+                </Space>
+              </a>
+            </Dropdown>
           </span>
         </span>
       </div>

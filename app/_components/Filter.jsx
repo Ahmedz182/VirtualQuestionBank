@@ -24,7 +24,7 @@ const Filter = ({ onFilterChange }) => {
           <select
             name="level"
             id="level"
-            className="bg-text rounded p-1 text-white"
+            className="bg-text rounded px-2 py-2 text-white"
             onChange={handleSelectChange}>
             <option className="bg-text" value="" disabled selected>
               Select Level

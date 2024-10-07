@@ -313,7 +313,7 @@ const AddQuestion = () => {
 
                       <button
                         type="submit"
-                        className="py-3 px-2 w-32 bg-green hover:bg-darkGreen transition ease-in mx-10 my-4 text-white rounded-md">
+                        className="py-3 px-2 w-32 bg-green hover:bg-darkGreen transition ease-in mx-10 my-4 text-text rounded-md">
                         Save Quiz
                       </button>
                     </form>

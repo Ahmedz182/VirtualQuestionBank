@@ -119,9 +119,9 @@ const Quiz = ({ data }) => {
               Back
             </p>
           </div>
-          <span className="flex flex-col ">
+          <span className="flex flex-col text-text">
             <p className="text-2xl flex items-center  font-semibold">
-              <BiChevronsRight /> {data.title}
+              {data.title}
             </p>
             <p>{data.desc}</p>
           </span>
