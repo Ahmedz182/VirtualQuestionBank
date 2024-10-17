@@ -2,7 +2,6 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import Nav from "./_components/Nav";
 import Footer from "./_components/Footer";
-import Head from "next/head";
 const outfit = Outfit({ subsets: ["latin"] });
 
 
@@ -17,13 +16,7 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <Head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8622346357576754"
-          crossOrigin="anonymous"
-        ></script>
-      </Head>
+    
 
       <body className={outfit.className}>
         <header>

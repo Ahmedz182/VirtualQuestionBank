@@ -34,6 +34,7 @@ const Admin = () => {
           "adminDetail",
           JSON.stringify(response.data.AdminDetail)
         );
+        localStorage.setItem("token", JSON.stringify(response.data.token));
         messageApi.success("Admin Login Successful");
         setTimeout(() => {
           router.push("/Dashboard");

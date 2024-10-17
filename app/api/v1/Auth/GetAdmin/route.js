@@ -2,6 +2,9 @@ import connectDB from "@/app/lib/config/mongodb";
 import ManagementSchema from "@/app/lib/models/AdminModel";
 const { NextResponse } = require("next/server");
 import bcrypt from 'bcryptjs';
+var jwt = require('jsonwebtoken');
+const KEY_jwt = "iamZackKnight";
+
 
 const LoadDb = async () => {
     await connectDB();
@@ -26,9 +29,21 @@ export async function POST(req) {
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (isMatch) {
+            //create JWT token
+            const token = jwt.sign(
+                {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                },
+                KEY_jwt, // replace with a strong secret or use environment variables
+                { expiresIn: '1h' } // Token expiration time (1 hour in this case)
+            );
+
             return NextResponse.json({
                 success: true,
                 msg: "Login successful",
+                token: token, // Include the JWT token in the response
                 role: user.role,
                 AdminDetail: {
                     name: user.name,

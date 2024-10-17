@@ -25,6 +25,7 @@ export async function POST(req) {
             email,
             password: hashedPassword,
             gender,
+
         };
 
         const UserData = await UserModel.create(data);
