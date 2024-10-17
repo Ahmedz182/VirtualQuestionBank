@@ -5,7 +5,7 @@ import Image from "next/image";
 const UserReport = ({ User, UserPerformance }) => {
   return (
     <>
-      <div className="flex flex-col justify-between text-text rounded p-10 min-h-[2024px]">
+      <div className="flex flex-col justify-between text-text rounded p-10 min-h-[1924px]">
         <div>
           {/* Header Section */}
           <div className="flex justify-between items-center ">
@@ -35,10 +35,10 @@ const UserReport = ({ User, UserPerformance }) => {
             <div className="flex flex-col gap-y-1">
               <p className="font-semibold text-xl">
                 Name :{" "}
-                <strong className="uppercase">Mr./Mrs {User.name}</strong>
+                <strong className="uppercase">Mr./Mrs {User?.name}</strong>
               </p>
               <p className="font-medium text-xl">
-                Email : <strong>{User.email}</strong>
+                Email : <strong>{User?.email}</strong>
               </p>
             </div>
             <div className="flex flex-col gap-y-1">
@@ -67,10 +67,10 @@ const UserReport = ({ User, UserPerformance }) => {
             <tbody>
               <tr className="font-semibold">
                 <td className="px-4 py-2 border">
-                  {UserPerformance[0].lastPlayed}
+                  {UserPerformance[0]?.lastPlayed}
                 </td>
                 <td className="px-4 py-2 border">
-                  {UserPerformance[0].lastPlayedScore}%
+                  {UserPerformance[0]?.lastPlayedScore}%
                 </td>
               </tr>
             </tbody>
@@ -90,13 +90,13 @@ const UserReport = ({ User, UserPerformance }) => {
             <tbody>
               <tr className="font-black">
                 <td className="px-4 py-2 border">
-                  {UserPerformance[0].totalPlayed}
+                  {UserPerformance[0]?.totalPlayed}
                 </td>
                 <td className="px-4 py-2 border text-darkGreen">
-                  {UserPerformance[0].Win || 0}
+                  {UserPerformance[0]?.Win || 0}
                 </td>
                 <td className="px-4 py-2 border text-red">
-                  {UserPerformance[0].loss || 0}
+                  {UserPerformance[0]?.loss || 0}
                 </td>
               </tr>
             </tbody>

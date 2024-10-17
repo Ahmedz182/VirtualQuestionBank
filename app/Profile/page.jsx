@@ -11,7 +11,6 @@ import Link from "next/link";
 import UserReport from "../_components/UserReport";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import ReactDOM from "react-dom";
 
 const Profile = () => {
   const [Login, setLogin] = useState(false);
@@ -19,7 +18,7 @@ const Profile = () => {
   const [UserPerformance, setUserPerformance] = useState(null);
   const [Avatar, setAvatar] = useState("");
   const router = useRouter();
-  const reportRef = useRef(); // Reference to render UserReport off-screen
+  const reportRef = useRef(); // For referencing the UserReport component
 
   const LoadUserPerformance = async (userEmail) => {
     try {
@@ -56,34 +55,29 @@ const Profile = () => {
     if (UserDetal) {
       setAvatar(UserDetal.gender === "male" ? maleAvatar : femaleAvatar);
     }
-  }, [UserDetal, UserPerformance]);
+  }, [UserDetal]);
 
   // Function to generate PDF from UserReport component
   const generatePdf = async () => {
-    const reportContainer = document.createElement("div");
-    document.body.appendChild(reportContainer);
+    const reportElement = reportRef.current;
 
-    ReactDOM.render(
-      <UserReport
-        User={UserDetal}
-        UserPerformance={UserPerformance}
-        ref={reportRef}
-      />,
-      reportContainer
-    );
+    // Temporarily show the report element
+    reportElement.style.display = "block";
 
-    const canvas = await html2canvas(reportContainer);
+    // Use html2canvas to create a canvas from the report
+    const canvas = await html2canvas(reportElement);
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
+    // Add image to PDF and save
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save("user-report.pdf");
 
-    ReactDOM.unmountComponentAtNode(reportContainer);
-    document.body.removeChild(reportContainer); // Clean up
+    // Hide the report element again
+    reportElement.style.display = "none";
   };
 
   return (
@@ -134,6 +128,14 @@ const Profile = () => {
                     onClick={generatePdf}>
                     Generate Report
                   </button>
+                </div>
+
+                {/* Wrapping UserReport component in a ref */}
+                <div ref={reportRef} style={{ display: "none" }}>
+                  <UserReport
+                    User={UserDetal}
+                    UserPerformance={UserPerformance}
+                  />
                 </div>
 
                 {/* Other Performance Data */}
@@ -190,8 +192,8 @@ const Profile = () => {
                   No data available Yet !!
                 </p>
                 <Link href="/Quiz">
-                  <button className="bg-text text-silver px-3 font-medium py-1 rounded-full">
-                    Play Now
+                  <button className="bg-text text-silver px-3 font-medium py-1 rounded">
+                    Play Quiz
                   </button>
                 </Link>
               </div>
