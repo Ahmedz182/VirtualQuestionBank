@@ -185,14 +185,11 @@ const Dashboard = () => {
     setLoading(true);
     const token = localStorage.getItem("token")?.replace(/"/g, ""); // Remove any quotes
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/v1/Auth/GetUser",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-          },
-        }
-      );
+      const response = await axios.get(`/api/v1/Auth/GetUser`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
 
       // Assuming response structure has users under "users"
       setApiAllUser(response.data.users);
