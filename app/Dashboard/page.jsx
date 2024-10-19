@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { GrEdit } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import logo from "@/public/images/default_img.jpg";
-import { Menu } from "antd";
+import { Menu, Skeleton } from "antd";
 import { Modal, Form, Input, message, Tooltip } from "antd";
+import jsPDF from "jspdf";
 
 import { HomeOutlined, DiffOutlined, UserAddOutlined } from "@ant-design/icons";
 
@@ -39,11 +41,15 @@ const Dashboard = () => {
       key: "user",
       icon: <UserAddOutlined />,
     },
+    {
+      label: "All User",
+      key: "all-user",
+      icon: <UserAddOutlined />,
+    },
   ];
 
   const [current, setCurrent] = useState("dashboard");
   const onClick = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
   };
 
@@ -51,16 +57,16 @@ const Dashboard = () => {
   const [AdminDetal, setAdminDetal] = useState(null);
   const [Login, setLogin] = useState(false);
   const [Apiquiz, setApiQuiz] = useState([] || null);
-  const [ApiUser, setApiUser] = useState([] || null);
   const [ApiSubject, setApiSubject] = useState([] || null);
-  useAuth();
+  // useAuth();
+  const [form] = Form.useForm(); // Initialize form
+
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [apiAllUser, setApiAllUser] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [subjectId, setSubjectId] = useState(null);
-  const [form] = Form.useForm(); // Correct initialization of form
+  const [subjectId, setSubjectId] = useState(null); // Correct initialization of form
 
   // Function to handle form submission and PUT request
   const handleSave = async () => {
@@ -112,7 +118,8 @@ const Dashboard = () => {
   useEffect(() => {
     dataLoad();
     dataLoadSubject();
-    dataLoadUser();
+    dataLoadAllUsers();
+
     const checkLogin = localStorage.getItem("Login");
     checkLogin ? setLogin(true) : setLogin(false);
     const adminDetails = localStorage.getItem("adminDetail");
@@ -172,13 +179,46 @@ const Dashboard = () => {
       console.error("Error loading subjects:", error);
     }
   };
-  const dataLoadUser = async () => {
-    try {
-      const response = await axios.post(`/api/v1/Auth/GetUser?UserCount=true`);
 
-      setApiUser(response.data);
+  // Function to load users with token
+  const dataLoadAllUsers = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token")?.replace(/"/g, ""); // Remove any quotes
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/Auth/GetUser",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+        }
+      );
+
+      // Assuming response structure has users under "users"
+      setApiAllUser(response.data.users);
+      setLoading(false);
+      console.log(response.data.users); // Log the actual data received
     } catch (error) {
-      console.error("Error loading users Lenght:", error);
+      console.error("Error loading users:", error);
+
+      if (error.response) {
+        // Check if the error is a 401 Unauthorized
+        setLoading(true);
+        if (error.response.status === 401) {
+          // Clear local storage if the token is invalid or expired
+          localStorage.removeItem("Login");
+          localStorage.removeItem("role");
+          localStorage.removeItem("token");
+          localStorage.removeItem("adminDetail");
+
+          // Redirect to the login page or admin auth page
+          window.location.href = "/auth/admin";
+        }
+        setLoading(false);
+        console.error("Error details:", error.response.data); // Log server response
+      } else {
+        console.error("Error message:", error.message);
+      }
     }
   };
 
@@ -211,6 +251,37 @@ const Dashboard = () => {
     });
   };
 
+  const handleDeleteUser = async (email) => {
+    try {
+      // Make a DELETE request with axios
+      const response = await axios.delete(
+        `/api/v1/Auth/GetUser?email=${email}`
+      );
+
+      const data = response.data;
+
+      if (data.success) {
+        alert(`User deleted: ${email}`);
+        location.reload(); // Added parentheses to properly reload the page
+        // Call the onDelete function passed from the parent to remove the user from the UI
+      } else {
+        console.error("Failed to delete user:", data.msg);
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  const showDeleteConfirm = (email) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this user?",
+      content: `This action will delete the user with email: ${email}.`, // Corrected template string
+      okText: "Yes",
+      cancelText: "No",
+      onOk: () => handleDeleteUser(email), // Pass email directly here
+    });
+  };
+
   const handleEditSubject = (id) => {
     Modal.confirm({
       title: "Are you sure you want to Edit this Subject?",
@@ -220,24 +291,118 @@ const Dashboard = () => {
       },
     });
   };
+  const generatePdf = async () => {
+    const pdf = new jsPDF("portrait", "mm", "a4"); // Set to portrait orientation
 
-  // Function to handle form submission and PUT request
-  // const handleSave = async () => {
-  //   try {
-  //     const values = await form.validateFields();
-  //     setLoading(true);
+    // Add the header section
+    pdf.setFontSize(16);
+    pdf.text("User Report Generated By Admin", 20, 20); // Title
+    pdf.setFontSize(12);
+    pdf.text(
+      `Generate Date: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`,
+      20,
+      30
+    ); // Date
 
-  //     await axios.put(`/api/v1/Subject?id=${subjectId}`, values);
+    let startY = 40; // Starting Y position for user details
+    const marginBottom = 20; // Space to leave at the bottom of the page
 
-  //     message.success("Subject updated successfully!");
-  //     onClose(); // Close the modal after successful update
-  //   } catch (error) {
-  //     console.error("Error updating subject:", error);
-  //     message.error("Failed to update subject.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+    // Loop through each user to add their details
+    apiAllUser.forEach((user, index) => {
+      const { name, email, role, performance } = user;
+
+      // Check if there is enough space left on the page
+      const pageHeight = pdf.internal.pageSize.height; // Total height of the page
+      const availableHeight = pageHeight - startY - marginBottom; // Height left to the bottom of the page
+
+      // Check if we have enough space for user details
+      if (availableHeight < 50) {
+        pdf.addPage(); // Add a new page
+        startY = 20; // Reset Y position for new page
+      }
+
+      // User Detail Section
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold"); // Set the font to Helvetica Bold for headings
+      pdf.text(`User ${index + 1} Detail:`, 20, startY); // Fixed index to start from 1
+      startY += 5; // Small space after heading
+
+      pdf.setFont("helvetica", "normal"); // Reset to normal font for details
+      // Format for User Detail with commas
+      pdf.text(
+        `Role: ${role || "N/A"}, UserName: ${name || "N/A"}, Email: ${
+          email || "N/A"
+        }`,
+        20,
+        startY
+      );
+
+      startY += 10; // Space after user detail
+
+      // Statistics Section
+      pdf.setFont("helvetica", "bold"); // Make the heading bold
+      pdf.text(`Statistics:`, 20, startY);
+      startY += 5; // Small space after heading
+
+      pdf.setFont("helvetica", "normal"); // Reset to normal font for stats
+
+      // Extracting performance data
+      const totalPlayed = performance[0]?.totalPlayed || 0;
+      const totalWins = performance[0]?.win || 0;
+      const totalLoss = performance[0]?.loss || 0;
+      const lastPlayedQuiz = performance[0]?.lastPlayed || "N/A";
+      const lastPlayedScore = `${performance[0]?.lastPlayedScore || "N/A"}%`;
+
+      // Now combining all the stats in one line
+      const xPosition = 20; // Starting X position for the stats
+      const winColor = [0, 128, 0]; // Green color for Wins
+      const lossColor = [255, 0, 0]; // Red color for Losses
+
+      // Set color for Total Played (black by default)
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`Total Played: ${totalPlayed}`, xPosition, startY);
+
+      // Set color for Total Wins (green)
+      const winXPosition =
+        xPosition + pdf.getTextWidth(`Total Played: ${totalPlayed}`) + 5;
+      pdf.setTextColor(winColor[0], winColor[1], winColor[2]);
+      pdf.text(`Total Wins: ${totalWins}`, winXPosition, startY);
+
+      // Set color for Total Loss (red)
+      const lossXPosition =
+        winXPosition + pdf.getTextWidth(`Total Wins: ${totalWins}`) + 5;
+      pdf.setTextColor(lossColor[0], lossColor[1], lossColor[2]);
+      pdf.text(`Total Loss: ${totalLoss}`, lossXPosition, startY);
+
+      // Reset text color back to black after printing Total Loss
+      pdf.setTextColor(0, 0, 0);
+
+      startY += 10; // Space after stats
+
+      // Add spacing between Last Played Quiz and Last Played Score
+      pdf.text(`Last Played Quiz: ${lastPlayedQuiz}`, 20, startY);
+      startY += 5; // Add space between quiz and score
+      pdf.text(`Last Played Score: ${lastPlayedScore}`, 20, startY);
+
+      startY += 15; // Space after each user's section
+
+      // Add a separator line for clarity
+      pdf.setDrawColor(0); // Set line color
+      pdf.line(20, startY - 10, 190, startY - 10); // Draw line across the page
+    });
+
+    // Add disclaimer
+    pdf.setFontSize(10);
+    pdf.text(
+      "This is a Computer Generated Report and does not require any Signature.",
+      20,
+      startY + 5
+    );
+    pdf.text("All Rights Reserved by Virtual Question Bank", 20, startY + 15);
+
+    // Save the generated PDF
+    pdf.save("All-user-stats-report.pdf");
+  };
 
   return (
     <>
@@ -258,6 +423,15 @@ const Dashboard = () => {
           <div className="text-text flex flex-col">
             {current == "dashboard" && (
               <div className="min-h-[40dvh] px-10 sm:px-7">
+                <div>
+                  <div className="flex justify-end my-2">
+                    <button
+                      className="bg-midnight text-silver px-3 font-medium py-2 rounded-xl "
+                      onClick={generatePdf}>
+                      Generate All Users Report
+                    </button>
+                  </div>
+                </div>
                 <div className="flex sm:flex-col bg-midnight text-white px-12 mx-2 sm:mx-0   p-5 sm:px-2 rounded-lg items-center justify-between sm:justify-start">
                   <span className="flex gap-5 items-center">
                     <p className="text-xl">
@@ -288,6 +462,7 @@ const Dashboard = () => {
                     </p>
                   </span>
                 </div>
+
                 <div className="flex flex-wrap justify-center gap-3 mx-3 my-2 mb-5 ">
                   <div className="flex gap-5 justify-between  sm:flex-col">
                     <div className="drop-shadow-xl px-5 py-10 w-[30dvw] sm:w-[82dvw] bg-midnight rounded-xl cursor-pointer transition ease-in hover:scale-95 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]">
@@ -310,7 +485,7 @@ const Dashboard = () => {
                       <p className=" text-xl  font-semibold flex text-white justify-between gap-x-10">
                         Total No. of Users :
                         <span className="tracking-wide font-black text-3xl  ">
-                          {ApiUser.user}
+                          {apiAllUser.length}
                         </span>
                       </p>
                     </div>
@@ -493,6 +668,76 @@ const Dashboard = () => {
                   </Form>
                 </Modal>
               </>
+            )}
+
+            {current === "all-user" && (
+              <div className="overflow-x-auto mb-5">
+                {apiAllUser ? (
+                  <ul className="list-none p-0">
+                    {apiAllUser.map(
+                      ({ name, email, role, performance }, index) => (
+                        <div
+                          className={`rounded py-5 justify-around px-4 gap-x-2 overflow-hidden ${
+                            index % 2 === 0
+                              ? "bg-bubble-gum/30 hover:bg-bubble-gum/40"
+                              : "bg-lightGreen/30 hover:bg-green/40"
+                          } hover:cursor-pointer transition duration-200 mx-10 my-2`}>
+                          <div className="flex justify-between">
+                            <p className="px-2 font-bold">
+                              {index + 1} : User Detail
+                            </p>
+                            <div className="flex justify-end flex-grow">
+                              <Tooltip title="Delete User">
+                                <span className="hover:font-semibold">
+                                  <MdOutlineDeleteForever
+                                    onClick={() => showDeleteConfirm(email)} // Pass email as a callback
+                                    className="text-red text-2xl"
+                                  />
+                                </span>
+                              </Tooltip>
+                            </div>
+                          </div>
+                          <div className="flex  items-center px-4">
+                            <div className="flex flex-wrap gap-x-5 py-2">
+                              <p className="w-24 sm:w-8 sm:text-sm">
+                                Role: <strong>{role}</strong>
+                              </p>
+                              <p className="w-64 sm:w-20 sm:text-sm">
+                                Name: <strong>{name}</strong>
+                              </p>
+                              <p className="w-72 sm:w-28 sm:text-sm ">
+                                Email: <strong>{email}</strong>
+                              </p>
+                            </div>
+                          </div>
+
+                          <p className="px-2 font-bold">User Performance</p>
+                          <div className="flex justify-between">
+                            <p className="px-4 py-2">
+                              Total Played:{" "}
+                              {performance[0]?.totalPlayed || "N/A"}
+                            </p>
+                            <p className="px-4 py-2">
+                              Total Win:{" "}
+                              <strong className="text-midnight">
+                                {performance[0]?.Win || "N/A"}
+                              </strong>
+                            </p>
+                            <p className="px-4 py-2">
+                              Total Loss:{" "}
+                              <strong className="text-red">
+                                {performance[0]?.loss || "N/A"}
+                              </strong>
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </ul>
+                ) : (
+                  <Skeleton />
+                )}
+              </div>
             )}
 
             {current == "user" && <AddUser />}

@@ -26,7 +26,6 @@ const Admin = () => {
 
     try {
       const response = await axios.post("/api/v1/Auth/GetAdmin", loginData); // Use POST and send data in body
-      console.log(response);
 
       if (response.status === 200) {
         localStorage.setItem("Login", true);

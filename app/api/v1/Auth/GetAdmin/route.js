@@ -1,5 +1,6 @@
 import connectDB from "@/app/lib/config/mongodb";
 import ManagementSchema from "@/app/lib/models/AdminModel";
+import UserModel from "@/app/lib/models/UserModel";
 const { NextResponse } = require("next/server");
 import bcrypt from 'bcryptjs';
 var jwt = require('jsonwebtoken');
@@ -18,23 +19,23 @@ export async function POST(req) {
             return NextResponse.json({ success: false, msg: "Email and password are required" }, { status: 400 });
         }
 
-        const user = await ManagementSchema.findOne({ email });
+        const admin = await ManagementSchema.findOne({ email });
 
 
-        if (!user) {
+        if (!admin) {
             return NextResponse.json({ success: false, msg: "Invalid email or password" }, { status: 401 });
         }
 
         // const hashPass = await bcrypt.hash(password, 10);
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, admin.password);
 
         if (isMatch) {
             //create JWT token
             const token = jwt.sign(
                 {
-                    id: user._id,
-                    email: user.email,
-                    role: user.role,
+                    id: admin._id,
+                    email: admin.email,
+                    role: admin.role,
                 },
                 KEY_jwt, // replace with a strong secret or use environment variables
                 { expiresIn: '1h' } // Token expiration time (1 hour in this case)
@@ -44,11 +45,11 @@ export async function POST(req) {
                 success: true,
                 msg: "Login successful",
                 token: token, // Include the JWT token in the response
-                role: user.role,
+                role: admin.role,
                 AdminDetail: {
-                    name: user.name,
-                    email: user.email,
-                    role: user.role
+                    name: admin.name,
+                    email: admin.email,
+                    role: admin.role
                 }
             }, { status: 200 });
         } else {
@@ -59,3 +60,5 @@ export async function POST(req) {
         return NextResponse.json({ success: false, msg: "Error logging in" }, { status: 500 });
     }
 }
+
+

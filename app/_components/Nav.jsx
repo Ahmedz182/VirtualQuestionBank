@@ -142,6 +142,7 @@ const Nav = () => {
             e.preventDefault();
             localStorage.removeItem("Login");
             localStorage.removeItem("role");
+            localStorage.removeItem("token");
             localStorage.removeItem("adminDetail");
             window.location.href = "/auth/admin";
           }}>

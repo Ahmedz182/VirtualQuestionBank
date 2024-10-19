@@ -11,6 +11,7 @@ import Link from "next/link";
 import UserReport from "../_components/UserReport";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import myLogo from "@/public/images/logo.png";
 
 const Profile = () => {
   const [Login, setLogin] = useState(false);
@@ -57,27 +58,61 @@ const Profile = () => {
     }
   }, [UserDetal]);
 
-  // Function to generate PDF from UserReport component
   const generatePdf = async () => {
-    const reportElement = reportRef.current;
+    const pdf = new jsPDF("landscape", "mm", "a4");
 
-    // Temporarily show the report element
-    reportElement.style.display = "block";
+    // Add the header section
+    pdf.setFontSize(16);
+    pdf.text("Individual User Report Generated", 20, 20); // Add title
+    pdf.setFontSize(12);
+    pdf.text(
+      `Generate Date: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`,
+      20,
+      30
+    ); // Add date
 
-    // Use html2canvas to create a canvas from the report
-    const canvas = await html2canvas(reportElement);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    // Add user details section
+    pdf.setFontSize(14);
+    pdf.text(`Name: Mr./Mrs ${UserDetal?.name || "N/A"}`, 20, 50); // Add user name
+    pdf.text(`Email: ${UserDetal?.email || "N/A"}`, 20, 60); // Add user email
+    pdf.text("Provided by: Virtual Question Bank", 150, 50); // Add provider
+    pdf.text("Contact: info@virtualquestionbank.com", 150, 60); // Add contact info
 
-    // Add image to PDF and save
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    // Add user performance section
+    pdf.setFontSize(12);
+    pdf.text("Last Played Score", 20, 80);
+
+    // Add the performance table headers
+    pdf.text("Last Played Quiz", 20, 90);
+    pdf.text("Last Played Score", 120, 90);
+
+    // Add the performance data
+    pdf.text(UserPerformance[0]?.lastPlayed || "N/A", 20, 100);
+    pdf.text(`${UserPerformance[0]?.lastPlayedScore || "N/A"}%`, 120, 100);
+
+    // Add total stats section
+    pdf.text("Total Stats", 20, 120);
+
+    // Add total stats table headers
+    pdf.text("Total Played Quiz", 20, 130);
+    pdf.text("Total No. of Wins", 120, 130);
+    pdf.text("Total No. of Loss", 220, 130);
+
+    // Add total stats data
+    pdf.text(`${UserPerformance[0]?.totalPlayed || "N/A"}`, 20, 140);
+    pdf.text(`${UserPerformance[0]?.Win || 0}`, 120, 140);
+    pdf.text(`${UserPerformance[0]?.loss || 0}`, 220, 140);
+
+    // Add disclaimer
+    pdf.text(
+      "This is a Computer Generated Report and does not require any Signature.",
+      20,
+      160
+    );
+    pdf.text("All Rights Reserved by Virtual Question Bank", 100, 170);
+
+    // Save the generated PDF
     pdf.save("user-report.pdf");
-
-    // Hide the report element again
-    reportElement.style.display = "none";
   };
 
   return (
@@ -128,14 +163,6 @@ const Profile = () => {
                     onClick={generatePdf}>
                     Generate Report
                   </button>
-                </div>
-
-                {/* Wrapping UserReport component in a ref */}
-                <div ref={reportRef} style={{ display: "none" }}>
-                  <UserReport
-                    User={UserDetal}
-                    UserPerformance={UserPerformance}
-                  />
                 </div>
 
                 {/* Other Performance Data */}

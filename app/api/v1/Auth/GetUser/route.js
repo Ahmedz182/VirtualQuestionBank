@@ -3,6 +3,10 @@ import UserModel from "@/app/lib/models/UserModel";
 const { NextResponse } = require("next/server");
 import bcrypt from 'bcryptjs';
 
+import jwt from 'jsonwebtoken';
+
+
+const KEY_jwt = "iamZackKnight";
 const LoadDb = async () => {
     await connectDB();
 };
@@ -90,5 +94,76 @@ export async function POST(req) {
     } catch (error) {
         console.error("Error logging in:", error);
         return NextResponse.json({ success: false, msg: "Error logging in" }, { status: 500 });
+    }
+}
+
+export async function GET(req) {
+    const token = req.headers.get('authorization')?.split(' ')[1]; // Get token from the Authorization header
+
+    try {
+        // Verify the token
+        if (!token) {
+            return NextResponse.json({ success: false, msg: "No token provided" }, { status: 401 });
+        }
+
+        let decodedToken;
+        try {
+            decodedToken = jwt.verify(token, KEY_jwt);
+        } catch (error) {
+            return NextResponse.json({ success: false, msg: "Invalid token" }, { status: 401 });
+        }
+
+        // If token is valid, return all users
+        const users = await UserModel.find({}); // Fetch all users
+        return NextResponse.json(
+            {
+                success: true,
+                msg: "Users fetched successfully",
+                users: users, // Return list of users
+            },
+            { status: 200 }
+        );
+
+    } catch (error) {
+        console.error("Error:", error);
+        return NextResponse.json({ success: false, msg: "Error processing request" }, { status: 500 });
+    }
+}
+
+export async function DELETE(req) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const email = searchParams.get("email"); // Get the email parameter from the request
+
+        if (!email) {
+            return NextResponse.json(
+                { success: false, msg: "Email is required" },
+                { status: 400 }
+            );
+        }
+
+        const user = await UserModel.findOne({ email });
+
+        if (!user) {
+            return NextResponse.json(
+                { success: false, msg: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        // Delete the user by email
+        await UserModel.deleteOne({ email });
+
+        return NextResponse.json(
+            { success: true, msg: `User with email ${email} deleted successfully` },
+            { status: 200 }
+        );
+
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return NextResponse.json(
+            { success: false, msg: "Error deleting user" },
+            { status: 500 }
+        );
     }
 }
