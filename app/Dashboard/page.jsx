@@ -677,6 +677,7 @@ const Dashboard = () => {
                     {apiAllUser.map(
                       ({ name, email, role, performance }, index) => (
                         <div
+                          key={email}
                           className={`rounded py-5 justify-around px-4 gap-x-2 overflow-hidden ${
                             index % 2 === 0
                               ? "bg-bubble-gum/30 hover:bg-bubble-gum/40"
