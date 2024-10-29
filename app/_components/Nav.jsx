@@ -8,6 +8,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   PieChartOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import {
   RiAccountPinCircleLine,
@@ -89,6 +90,15 @@ const Nav = () => {
     },
     {
       key: "2",
+      icon: <MessageOutlined />,
+      label: (
+        <Link href="/Chat" className="text-sm font-semibold">
+          Live Chat
+        </Link>
+      ),
+    },
+    {
+      key: "3",
       danger: true,
       icon: <LogoutOutlined />,
       label: (
@@ -133,6 +143,15 @@ const Nav = () => {
     },
     {
       key: "3",
+      icon: <MessageOutlined />,
+      label: (
+        <Link href="/Chat" className="text-sm font-semibold">
+          Live Chat
+        </Link>
+      ),
+    },
+    {
+      key: "4",
       icon: <LogoutOutlined />,
       danger: true,
       label: (

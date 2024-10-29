@@ -1,5 +1,22 @@
 import { Schema, models, model } from "mongoose";
 
+const MessageSchema = new Schema({
+    userId: {
+        type: String, // Use user ID for identification
+        required: true
+    },
+    messages: [{
+        content: {
+            type: String,
+            required: true
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }]
+});
+
 const ManagementSchema = new Schema({
     name: {
         type: String,
@@ -26,6 +43,8 @@ const ManagementSchema = new Schema({
         type: String,
         required: true
     },
+    Messages: [MessageSchema], // Use the MessageSchema here
+
     date: {
         type: Date,
         default: Date.now
