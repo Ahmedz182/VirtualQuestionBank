@@ -121,7 +121,7 @@ const ChatUi = () => {
                 {messages.map(({ sender, message, time }, index) => (
                   <React.Fragment key={index}>
                     {sender === "ahmedmughal3182@gmail.com" ? (
-                      <span className="flex gap-x-1 justify-end">
+                      <span className="flex gap-x-2 justify-start">
                         <Image
                           src={CustomerCare}
                           width={40}
@@ -130,7 +130,7 @@ const ChatUi = () => {
                           alt="Receiver Avatar"
                           loading="lazy"
                         />
-                        <div className="outline-dashed bg-lightGreen/40 text-black outline-text outline-1 rounded justify-end p-2 w-96">
+                        <div className="outline-dashed bg-lightGreen/40 text-black outline-text outline-1 rounded justify-end p-2  me-16">
                           <span className="text-xs flex justify-between">
                             <p>Admin</p> {/* Display sender's email */}
                             <p>{time}</p>
@@ -139,10 +139,10 @@ const ChatUi = () => {
                         </div>
                       </span>
                     ) : (
-                      <span className="flex gap-x-1 justify-between">
-                        <div className="outline-dashed outline-text bg-text/40 text-white outline-1 flex flex-col rounded p-2 w-96">
+                      <span className="flex gap-x-2 justify-end">
+                        <div className="outline-dashed outline-text bg-text/40 text-white outline-1 flex flex-col rounded p-2   ms-16">
                           <span className="text-xs flex justify-between">
-                            <p>Admin</p> {/* Display sender's email */}
+                            <p>User Message</p> {/* Display sender's email */}
                             <p>{time}</p>
                           </span>
                           <p>{message}</p>

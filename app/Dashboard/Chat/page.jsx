@@ -119,7 +119,11 @@ const AdminChatUi = () => {
               {messages.map(({ sender, message, time }, index) => (
                 <React.Fragment key={index}>
                   {sender === "ahmedmughal3182@gmail.com" ? (
-                    <span className="flex gap-x-1 justify-end">
+                    <span className="flex gap-x-2 justify-end">
+                      <div className="outline-dashed bg-lightGreen/40 text-black outline-text outline-1 rounded justify-end p-2 ">
+                        <p className="text-xs">{time}</p>
+                        <p>{message}</p>
+                      </div>
                       <Image
                         src={CustomerCare}
                         width={40}
@@ -128,20 +132,9 @@ const AdminChatUi = () => {
                         alt="Admin Avatar"
                         loading="lazy"
                       />
-                      <div className="outline-dashed bg-lightGreen/40 text-black outline-text outline-1 rounded justify-end p-2 w-96">
-                        <p className="text-xs">{time}</p>
-                        <p>{message}</p>
-                      </div>
                     </span>
                   ) : (
-                    <span className="flex gap-x-1 justify-between">
-                      <div className="outline-dashed outline-text bg-text/40 text-white outline-1 flex flex-col rounded p-2 w-96">
-                        <span className="text-xs flex justify-between">
-                          <p>{sender}</p> {/* Display sender's email */}
-                          <p>{time}</p>
-                        </span>
-                        <p>{message}</p>
-                      </div>
+                    <span className="flex gap-x-2 justify-start">
                       <Image
                         src={userCare}
                         width={30}
@@ -150,6 +143,13 @@ const AdminChatUi = () => {
                         alt="User Avatar"
                         loading="lazy"
                       />
+                      <div className="outline-dashed outline-text bg-text/40 text-white outline-1 flex flex-col rounded p-2 ">
+                        <span className="text-xs flex justify-between">
+                          <p>{sender}</p> {/* Display sender's email */}
+                          <p>{time}</p>
+                        </span>
+                        <p>{message}</p>
+                      </div>
                     </span>
                   )}
                 </React.Fragment>
@@ -157,7 +157,7 @@ const AdminChatUi = () => {
               <div ref={messagesEndRef} /> {/* Empty div to scroll to */}
             </div>
 
-            <div className="w-full flex items-center  justify-center gap-x-3 pt-5 mb-2 px-2">
+            <div className="w-full flex items-center  justify-center gap-x-3 pt-5 mb-2 px-2 ">
               <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
