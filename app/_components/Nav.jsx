@@ -145,7 +145,7 @@ const Nav = () => {
       key: "3",
       icon: <MessageOutlined />,
       label: (
-        <Link href="/Chat" className="text-sm font-semibold">
+        <Link href="/Dashboard/Chat" className="text-sm font-semibold">
           Live Chat
         </Link>
       ),
