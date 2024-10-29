@@ -105,8 +105,8 @@ const AdminChatUi = () => {
   return (
     <>
       {login && (
-        <div className="min-h-screen p-10 flex items-center justify-center sm:items-start">
-          <div className="bg-white border border-text rounded flex flex-col resize">
+        <div className="  p-10 flex items-center justify-center sm:items-start">
+          <div className="bg-white h-screen sm:h-[60dvh] w-[90dvw] border border-text rounded flex flex-col resize">
             <div className="flex p-3 flex-col">
               <div className="flex justify-between px-3">
                 <p className="font-bold text-left">Admin Live Chat</p>
@@ -115,7 +115,7 @@ const AdminChatUi = () => {
               <hr className="w-full border-t border-text mt-2" />
             </div>
 
-            <div className="overflow-y-scroll p-3 px-5 flex flex-col gap-y-3 h-96">
+            <div className="overflow-y-scroll p-3 px-5 flex flex-col gap-y-3 h-[80dvh] sm:h-[60dvh]">
               {messages.map(({ sender, message, time }, index) => (
                 <React.Fragment key={index}>
                   {sender === "ahmedmughal3182@gmail.com" ? (
@@ -157,7 +157,7 @@ const AdminChatUi = () => {
               <div ref={messagesEndRef} /> {/* Empty div to scroll to */}
             </div>
 
-            <div className="w-full flex items-center justify-center gap-x-3 pt-5 mb-2 px-2">
+            <div className="w-full flex items-center  justify-center gap-x-3 pt-5 mb-2 px-2">
               <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
