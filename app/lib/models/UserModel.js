@@ -24,21 +24,6 @@ const PerformanceSchema = new Schema({
 
 });
 
-const Message = new Schema({
-    Customer: {
-        type: String
-
-    },
-    Reciver: {
-        type: String
-    },
-    Time: {
-        type: Date,
-        default: Date.now
-
-    },
-
-});
 
 const UserSchema = new Schema({
     name: {
@@ -67,10 +52,7 @@ const UserSchema = new Schema({
         type: [PerformanceSchema]
 
     },
-    Message: {
-        type: [Message]
 
-    },
     date: {
         type: Date,
         default: Date.now

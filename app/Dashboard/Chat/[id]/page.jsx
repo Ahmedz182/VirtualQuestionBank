@@ -12,11 +12,11 @@ import { useRouter } from "next/navigation";
 
 const AdminChatUi = () => {
   const { id } = useParams(); // User ID from URL
+  const decodedEmail = decodeURIComponent(id); // Decodes the email
+
   const [messages, setMessages] = useState([]);
   const [login, setLogin] = useState(true);
-  const [SendMessage, setSendMessage] = useState("");
   const [newMessage, setNewMessage] = useState("");
-  const [receiverEmail, setReceiverEmail] = useState(""); // New state for receiver email
   const messagesEndRef = useRef(null);
   const router = useRouter();
 
@@ -42,11 +42,6 @@ const AdminChatUi = () => {
     const channel = pusher.subscribe("my-channel");
 
     const handleIncomingMessage = (data) => {
-      console.log("Incoming message:", data);
-      setSendMessage(data.sender);
-      setReceiverEmail(data.sender); // Set the receiver's email
-
-      // Add new message to the messages state
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -75,11 +70,10 @@ const AdminChatUi = () => {
     if (!newMessage) return;
 
     const sender = "ahmedmughal3182@gmail.com"; // Admin's email
-    const isAdmin = sender === "ahmedmughal3182@gmail.com"; // Check if sender is admin
-    const receiver = receiverEmail; // Use the email set from incoming message
+    const receiver = decodedEmail; // Use the email set from incoming message
 
     try {
-      const response = await axios.post("/api/v1/Pusher", {
+      await axios.post("/api/v1/Pusher", {
         message: newMessage,
         sender,
         receiver,
@@ -92,7 +86,6 @@ const AdminChatUi = () => {
       ]);
 
       setNewMessage(""); // Clear input field
-      console.log(response);
     } catch (error) {
       console.error(
         "Error sending message:",
@@ -105,72 +98,80 @@ const AdminChatUi = () => {
   return (
     <>
       {login && (
-        <div className="  p-10 flex items-center justify-center sm:items-start">
-          <div className="bg-white h-screen sm:h-[60dvh] w-[90dvw] border border-text rounded flex flex-col resize">
-            <div className="flex p-3 flex-col">
-              <div className="flex justify-between px-3">
-                <p className="font-bold text-left">Admin Live Chat</p>
+        <div className="p-10 flex items-center justify-center sm:items-start">
+          <div className="bg-white h-screen sm:h-[85dvh] w-[90vw] border rounded flex flex-col">
+            <div className="p-4">
+              <div className="flex justify-between">
+                <p className="font-bold text-lg">
+                  Admin Live Chat with {decodedEmail}
+                </p>
                 <p>{formattedDate}</p>
               </div>
-              <hr className="w-full border-t border-text mt-2" />
+              <hr className="border-t mt-2" />
             </div>
 
-            <div className="overflow-y-scroll p-3 px-5 flex flex-col gap-y-3 h-[80dvh] sm:h-[60dvh]">
+            <div className="overflow-y-auto p-4 h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
               {messages.map(({ sender, message, time }, index) => (
-                <React.Fragment key={index}>
+                <div
+                  key={index}
+                  className={`flex ${
+                    sender === "ahmedmughal3182@gmail.com"
+                      ? "justify-end"
+                      : "justify-start"
+                  }`}>
                   {sender === "ahmedmughal3182@gmail.com" ? (
-                    <span className="flex gap-x-2 justify-end">
-                      <div className="outline-dashed bg-lightGreen/40 text-black outline-text outline-1 rounded justify-end p-2 ">
-                        <p className="text-xs">{time}</p>
+                    <div className="flex items-start gap-2">
+                      <div className="bg-text text-white p-3 rounded-lg max-w-xs shadow-md">
+                        <span className="text-xs gap-x-4 flex justify-between">
+                          <p>Admin</p>
+                          <p>{time}</p>
+                        </span>
                         <p>{message}</p>
                       </div>
                       <Image
                         src={CustomerCare}
                         width={40}
                         height={40}
-                        className="object-contain p-1 imgAvtor bg-silver/40"
+                        className="rounded-full bg-gray-200"
                         alt="Admin Avatar"
-                        loading="lazy"
                       />
-                    </span>
+                    </div>
                   ) : (
-                    <span className="flex gap-x-2 justify-start">
+                    <div className="flex items-end gap-2">
                       <Image
                         src={userCare}
-                        width={30}
-                        height={30}
-                        className="object-contain imgAvtor bg-silver/40"
+                        width={40}
+                        height={40}
+                        className="rounded-full bg-gray-200"
                         alt="User Avatar"
-                        loading="lazy"
                       />
-                      <div className="outline-dashed outline-text bg-text/40 text-white outline-1 flex flex-col rounded p-2 ">
-                        <span className="text-xs flex justify-between">
-                          <p>{sender}</p> {/* Display sender's email */}
+                      <div className="bg-lightGreen/40 p-3 rounded-lg max-w-xs shadow-md">
+                        <span className="text-xs gap-x-4 flex justify-between">
+                          <p>{sender}</p>
                           <p>{time}</p>
                         </span>
                         <p>{message}</p>
                       </div>
-                    </span>
+                    </div>
                   )}
-                </React.Fragment>
+                </div>
               ))}
-              <div ref={messagesEndRef} /> {/* Empty div to scroll to */}
+              <div ref={messagesEndRef} />
             </div>
 
-            <div className="w-full flex items-center  justify-center gap-x-3 pt-5 mb-2 px-2 ">
+            <div className="p-4 h-24 flex items-center gap-x-2 border-t">
               <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                cols={48}
+                rows={1}
+                className="w-full p-2 border rounded focus:outline-none"
+                placeholder="Enter your message here..."
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     handleSendMessage();
                   }
                 }}
-                rows={1}
-                className="outline-none p-2"
-                placeholder="Enter your message here..."
               />
               <Tooltip title="Send">
                 <FiSend

@@ -1,20 +1,35 @@
 // app/api/v1/Pusher/route.js
 import pusher from "@/app/pusher";
+import Message from "@/app/lib/models/ChatModel";
+import connectDB from "@/app/lib/config/mongodb";
 
-// Named export for the POST method
+// Handler for the POST request
 export async function POST(req) {
     try {
-        const { message, sender, receiver } = await req.json(); // Extract message, sender, and receiver from the request body
+        // Ensure database connection is established
+        await connectDB();
 
-        // Trigger the Pusher event with receiver information
-        await pusher.trigger("my-channel", "my-event", {
+        const { message, sender, receiver } = await req.json();
+
+        // Save the message in the database
+        const savedMessage = await Message.create({
             message,
             sender,
             receiver,
+            time: new Date(),
         });
 
-        return new Response("Message sent successfully", { status: 200 });
+        // Trigger the Pusher event with the message details
+        await pusher.trigger("my-channel", "my-event", {
+            message: savedMessage.message,
+            sender: savedMessage.sender,
+            receiver: savedMessage.receiver,
+            time: savedMessage.time,
+        });
+
+        return new Response("Message sent and saved successfully", { status: 200 });
     } catch (error) {
+        console.error("Error processing request:", error);
         return new Response("Error sending message", { status: 500 });
     }
 }
