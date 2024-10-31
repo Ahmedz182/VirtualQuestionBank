@@ -367,7 +367,7 @@ const Dashboard = () => {
 
       // Extracting performance data
       const totalPlayed = performance[0]?.totalPlayed || 0;
-      const totalWins = performance[0]?.win || 0;
+      const totalWins = performance[0]?.Win || 0;
       const totalLoss = performance[0]?.loss || 0;
       const lastPlayedQuiz = performance[0]?.lastPlayed || "N/A";
       const lastPlayedScore = `${performance[0]?.lastPlayedScore || "N/A"}%`;
