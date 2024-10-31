@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Pusher from "pusher-js";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const AdminChatUi = () => {
   const { id } = useParams(); // Get user ID from URL params
@@ -20,7 +21,7 @@ const AdminChatUi = () => {
 
   // Check if admin is logged in
   useEffect(() => {
-    const checkLogin = localStorage.getItem("Login");
+    const checkLogin = Cookies.get("Login");
     if (!checkLogin) {
       alert("Please Login first to chat");
       router.push("/auth/admin");
