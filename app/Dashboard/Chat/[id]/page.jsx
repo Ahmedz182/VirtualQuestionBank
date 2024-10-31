@@ -20,15 +20,15 @@ const AdminChatUi = () => {
   const router = useRouter(); // Router instance for navigation
 
   // Check if admin is logged in
-  useEffect(() => {
-    const checkLogin = Cookies.get("Login");
-    if (!checkLogin) {
-      alert("Please Login first to chat");
-      router.push("/auth/admin");
-    } else {
-      setLogin(true);
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const checkLogin = Cookies.get("Login");
+  //   if (!checkLogin) {
+  //     alert("Please Login first to chat");
+  //     router.push("/auth/admin");
+  //   } else {
+  //     setLogin(true);
+  //   }
+  // }, [router]);
 
   // Decode the email from the URL
   useEffect(() => {
