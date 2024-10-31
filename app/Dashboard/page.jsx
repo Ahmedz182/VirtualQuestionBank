@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import Loading from "../loading";
 import AddUser from "./AddUser/page";
+import Cookies from "js-cookie";
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +40,6 @@ const Dashboard = () => {
       key: "dashboard",
       icon: <HomeOutlined />,
     },
-
     {
       label: "Quizies",
       key: "quiz",
@@ -50,7 +50,6 @@ const Dashboard = () => {
       key: "subject",
       icon: <DiffOutlined />,
     },
-
     {
       label: "Users",
       key: "all-user",
@@ -73,9 +72,8 @@ const Dashboard = () => {
   const [Login, setLogin] = useState(false);
   const [Apiquiz, setApiQuiz] = useState([] || null);
   const [ApiSubject, setApiSubject] = useState([] || null);
-  const [email, setEmail] = useState(""); // State to hold email input
-  // useAuth();
-  const [form] = Form.useForm(); // Initialize form
+  const [email, setEmail] = useState("");
+  const [form] = Form.useForm();
 
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
@@ -83,20 +81,16 @@ const Dashboard = () => {
   const [Messages, setMessages] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [subjectId, setSubjectId] = useState(null); // Correct initialization of form
+  const [subjectId, setSubjectId] = useState(null);
 
-  // Function to handle form submission and PUT request
   const handleSave = async () => {
     try {
-      const values = await form.validateFields(); // Get form values
+      const values = await form.validateFields();
       setLoading(true);
-
-      // Send PUT request to update the subject by id
       await axios.put(`/api/v1/Subject/?id=${subjectId}`, values);
-
       message.success("Subject updated successfully!");
-      setIsVisible(false); // Close the modal after successful update
-      dataLoadSubject(); // Reload subjects after updating
+      setIsVisible(false);
+      dataLoadSubject();
     } catch (error) {
       console.error("Error updating subject:", error);
       message.error("Failed to update subject.");
@@ -105,31 +99,26 @@ const Dashboard = () => {
     }
   };
 
-  // Function to handle modal open and load subject details
   const EditSubject = async (id) => {
     try {
       const response = await axios.get(`/api/v1/Subject?id=${id}`);
-      const subjectData = response.data.subject; // Assuming 'subject' is the object from the response
-
-      // Set form fields with subject data
+      const subjectData = response.data.subject;
       form.setFieldsValue({
         title: subjectData.title,
         desc: subjectData.desc,
-        imgUrl: subjectData.imgUrl || "", // Optional field
+        imgUrl: subjectData.imgUrl || "",
       });
-
-      setSubjectId(id); // Store the subject ID for updating
-      setIsVisible(true); // Show the modal
+      setSubjectId(id);
+      setIsVisible(true);
     } catch (error) {
       console.error("Error fetching subject:", error);
       message.error("Failed to fetch subject data.");
     }
   };
 
-  // Close the modal
   const onClose = () => {
     setIsVisible(false);
-    form.resetFields(); // Reset form fields when the modal is closed
+    form.resetFields();
   };
 
   useEffect(() => {
@@ -137,104 +126,84 @@ const Dashboard = () => {
     dataLoadSubject();
     dataLoadAllUsers();
 
-    const checkLogin = localStorage.getItem("Login");
-    checkLogin ? setLogin(true) : setLogin(false);
-    const adminDetails = localStorage.getItem("adminDetail");
+    // Retrieve login status and admin details from cookies
+    const checkLogin = Cookies.get("Login");
+    setLogin(!!checkLogin); // Set login status based on cookie presence
+
+    const adminDetails = Cookies.get("adminDetail");
     if (adminDetails) {
       try {
-        const parsedDetails = JSON.parse(adminDetails);
-        setAdminDetal(parsedDetails);
+        setAdminDetal(JSON.parse(adminDetails)); // Parse JSON from cookie
       } catch (error) {
-        console.error("Error parsing user details:", error);
+        console.error("Error parsing admin details:", error);
       }
     }
   }, []);
+
   const dataLoad = async () => {
     try {
       const response = await axios.get("/api/v1/Quiz");
       const responseMsg = await axios.get("/api/v1/messages?all=all");
-
       setApiQuiz(response.data.quiz);
       setMessages(responseMsg.data);
     } catch (error) {
       console.error("Error loading quiz:", error);
     }
   };
+
   const DelData = async (id) => {
     try {
-      const response = await axios.delete(`/api/v1/Quiz?id=${id}`);
-      console.log(response);
+      await axios.delete(`/api/v1/Quiz?id=${id}`);
       setApiQuiz(Apiquiz.filter((quiz) => quiz._id !== id));
       messageApi.success("Quiz Deleted Successfully.");
     } catch (error) {
       console.error("Error Deleting quiz:", error);
     }
   };
+
   const DelSubject = async (id) => {
     try {
-      const response = await axios.delete(`/api/v1/Subject?id=${id}`);
-      console.log(response);
+      await axios.delete(`/api/v1/Subject?id=${id}`);
       setApiSubject(ApiSubject.filter((subject) => subject._id !== id));
-      messageApi.success("subject Deleted Successfully.");
+      messageApi.success("Subject Deleted Successfully.");
     } catch (error) {
-      console.error("Error subject quiz:", error);
+      console.error("Error deleting subject:", error);
     }
   };
 
-  const EditData = async (id) => {
-    try {
-      router.push(`/Dashboard/addQuiz/${id}`);
-    } catch (error) {
-      console.error("Error Editing quiz:", error);
-    }
+  const EditData = (id) => {
+    router.push(`/Dashboard/addQuiz/${id}`);
   };
 
   const dataLoadSubject = async () => {
     try {
       const response = await axios.get("/api/v1/Subject");
-
       setApiSubject(response.data.subjects);
     } catch (error) {
       console.error("Error loading subjects:", error);
     }
   };
 
-  // Function to load users with token
   const dataLoadAllUsers = async () => {
     setLoading(true);
-    const token = localStorage.getItem("token")?.replace(/"/g, ""); // Remove any quotes
+    const token = Cookies.get("token")?.replace(/"/g, "");
     try {
       const response = await axios.get(`/api/v1/Auth/GetUser`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
-
-      // Assuming response structure has users under "users"
       setApiAllUser(response.data.users);
       setLoading(false);
-      console.log(response.data.users); // Log the actual data received
     } catch (error) {
       console.error("Error loading users:", error);
-
-      if (error.response) {
-        // Check if the error is a 401 Unauthorized
-        setLoading(true);
-        if (error.response.status === 401) {
-          // Clear local storage if the token is invalid or expired
-          localStorage.removeItem("Login");
-          localStorage.removeItem("role");
-          localStorage.removeItem("token");
-          localStorage.removeItem("adminDetail");
-
-          // Redirect to the login page or admin auth page
-          window.location.href = "/auth/admin";
-        }
-        setLoading(false);
-        console.error("Error details:", error.response.data); // Log server response
-      } else {
-        console.error("Error message:", error.message);
+      if (error.response?.status === 401) {
+        ["Login", "role", "token", "adminDetail"].forEach(
+          localStorage.removeItem
+        );
+        window.location.href = "/auth/admin";
       }
+      setLoading(false);
     }
   };
 
@@ -242,46 +211,35 @@ const Dashboard = () => {
     Modal.confirm({
       title: "Are you sure you want to delete this quiz?",
       content: "This action cannot be undone.",
-      onOk: () => {
-        DelData(id);
-      },
+      onOk: () => DelData(id),
     });
   };
+
   const handleDeleteSubject = (id) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Subject?",
       content: "This action cannot be undone.",
-      onOk: () => {
-        DelSubject(id);
-      },
+      onOk: () => DelSubject(id),
     });
   };
 
   const handleEdit = (id) => {
     Modal.confirm({
       title: "Are you sure you want to Edit this quiz?",
-      // content: "This action cannot be undone.",
-      onOk: () => {
-        EditData(id);
-      },
+      onOk: () => EditData(id),
     });
   };
 
   const handleDeleteUser = async (email) => {
     try {
-      // Make a DELETE request with axios
       const response = await axios.delete(
         `/api/v1/Auth/GetUser?email=${email}`
       );
-
-      const data = response.data;
-
-      if (data.success) {
+      if (response.data.success) {
         alert(`User deleted: ${email}`);
-        location.reload(); // Added parentheses to properly reload the page
-        // Call the onDelete function passed from the parent to remove the user from the UI
+        location.reload();
       } else {
-        console.error("Failed to delete user:", data.msg);
+        console.error("Failed to delete user:", response.data.msg);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -291,20 +249,17 @@ const Dashboard = () => {
   const showDeleteConfirm = (email) => {
     Modal.confirm({
       title: "Are you sure you want to delete this user?",
-      content: `This action will delete the user with email: ${email}.`, // Corrected template string
+      content: `This action will delete the user with email: ${email}.`,
       okText: "Yes",
       cancelText: "No",
-      onOk: () => handleDeleteUser(email), // Pass email directly here
+      onOk: () => handleDeleteUser(email),
     });
   };
 
   const handleEditSubject = (id) => {
     Modal.confirm({
       title: "Are you sure you want to Edit this Subject?",
-      // content: "This action cannot be undone.",
-      onOk: () => {
-        EditSubject(id);
-      },
+      onOk: () => EditSubject(id),
     });
   };
   const generatePdf = async () => {

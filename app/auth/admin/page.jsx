@@ -7,6 +7,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { message } from "antd";
+import Cookie from "js-cookie"; // Import js-cookie
 
 const Admin = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -28,12 +29,13 @@ const Admin = () => {
       const response = await axios.post("/api/v1/Auth/GetAdmin", loginData); // Use POST and send data in body
 
       if (response.status === 200) {
-        localStorage.setItem("Login", true);
-        localStorage.setItem(
-          "adminDetail",
-          JSON.stringify(response.data.AdminDetail)
-        );
-        localStorage.setItem("token", JSON.stringify(response.data.token));
+        // Set cookies instead of localStorage
+        Cookie.set("Login", "true", { expires: 1 }); // Cookie will expire in 1 day
+        Cookie.set("adminDetail", JSON.stringify(response.data.AdminDetail), {
+          expires: 1,
+        });
+        Cookie.set("token", response.data.token, { expires: 1 });
+
         messageApi.success("Admin Login Successful");
         setTimeout(() => {
           router.push("/Dashboard");
@@ -55,7 +57,7 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    const isLogin = localStorage.getItem("Login");
+    const isLogin = Cookie.get("Login"); // Use cookies to check login status
 
     if (isLogin) {
       router.push("/Dashboard");
@@ -73,7 +75,7 @@ const Admin = () => {
           Welcome Back, Admin! Continue Managing Your Platform.
         </p>
         <div className="flex items-start justify-center">
-          <div className="flex  flex-col mt-10 bg-[#f2f4f7] w-[45dvw]  sm:w-[85dvw] md:w-[90dvw]  p-6 rounded-lg drop-shadow-lg  ">
+          <div className="flex flex-col mt-10 bg-[#f2f4f7] w-[45dvw] sm:w-[85dvw] md:w-[90dvw] p-6 rounded-lg drop-shadow-lg">
             <p className="tracking-wider font-semibold uppercase text-3xl text-center my-5">
               Admin Login
             </p>

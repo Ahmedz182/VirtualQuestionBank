@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import Cookies from "js-cookie";
 import {
   LoginOutlined,
   UserAddOutlined,
@@ -151,10 +151,10 @@ const Nav = () => {
           className="text-sm font-semibold"
           onClick={(e) => {
             e.preventDefault();
-            localStorage.removeItem("Login");
-            localStorage.removeItem("role");
-            localStorage.removeItem("token");
-            localStorage.removeItem("adminDetail");
+            Cookies.remove("Login");
+            Cookies.remove("role");
+            Cookies.remove("token");
+            Cookies.remove("adminDetail");
             window.location.href = "/auth/admin";
           }}>
           Logout
@@ -176,12 +176,11 @@ const Nav = () => {
     };
 
     const getAdminDetails = () => {
-      const adminDetails = localStorage.getItem("adminDetail");
+      const adminDetails = Cookies.get("adminDetail"); // Retrieve from cookies
       if (adminDetails) {
         try {
           const parsedDetails = JSON.parse(adminDetails);
-
-          setAdminDetal(parsedDetails);
+          setAdminDetal(parsedDetails); // Update state with parsed details
         } catch (error) {
           console.error("Error parsing Admin details:", error);
         }
@@ -190,7 +189,7 @@ const Nav = () => {
 
     const checkLoginStatus = () => {
       const isLogin = localStorage.getItem("UserLogin");
-      const isAdminLogin = localStorage.getItem("Login");
+      const isAdminLogin = Cookies.get("Login"); // Retrieve the login status from cookies
 
       setLogin(!!isLogin);
       setAdminLogin(!!isAdminLogin);
