@@ -1,39 +1,62 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import CustomerCare from "@/public/images/care.png"; // Admin Avatar
-import userCare from "@/public/images/userCare.png"; // User Avatar
+import CustomerCare from "@/public/images/care.png";
+import userCare from "@/public/images/userCare.png";
 import { FiSend } from "react-icons/fi";
 import { Tooltip } from "antd";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Pusher from "pusher-js";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const AdminChatUi = () => {
-  const { id } = useParams(); // User ID from URL
-  const decodedEmail = decodeURIComponent(id); // Decodes the email
+  const { id } = useParams(); // Get user ID from URL params
+  const [messages, setMessages] = useState([]); // Store chat messages
+  const [login, setLogin] = useState(false); // Admin login status
+  const [decodedEmail, setDecodedEmail] = useState(null); // Decoded email from the URL
+  const [newMessage, setNewMessage] = useState(""); // New message input
+  const messagesEndRef = useRef(null); // Reference for scrolling to bottom
+  const router = useRouter(); // Router instance for navigation
 
-  const [messages, setMessages] = useState([]);
-  const [login, setLogin] = useState(true);
-  const [newMessage, setNewMessage] = useState("");
-  const messagesEndRef = useRef(null);
-  const router = useRouter();
-
-  // Check if user is logged in
+  // Check if admin is logged in
   useEffect(() => {
-    const checkLogin = localStorage.getItem("UserLogin");
+    const checkLogin = localStorage.getItem("Login");
     if (!checkLogin) {
-      // Uncomment these lines for login check behavior
-      // setLogin(false);
-      // alert("Please Login first to chat ");
-      // router.push("/auth/login");
+      alert("Please Login first to chat");
+      router.push("/auth/admin");
     } else {
       setLogin(true);
     }
   }, [router]);
 
-  // Initialize Pusher
+  // Decode the email from the URL
+  useEffect(() => {
+    const userEmail = decodeURIComponent(id); // Decode the email
+    if (userEmail) {
+      setDecodedEmail(userEmail); // Set the decoded email
+      fetchOldMessages(userEmail); // Fetch messages after email is set
+    } else {
+      console.error("No email found for this ID.");
+    }
+  }, [id]);
+
+  // Fetch old messages based on the user's email
+  const fetchOldMessages = async (userEmail) => {
+    try {
+      const response = await axios.get(`/api/v1/messages?email=${userEmail}`); // Fetch messages based on user email
+      const allMessages = response.data?.messages || []; // All messages from the server
+
+      // Directly set all messages without filtering
+      setMessages(allMessages);
+    } catch (error) {
+      console.error(
+        "Error fetching messages:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  // Initialize Pusher for real-time messaging
   useEffect(() => {
     const pusher = new Pusher("a788034843d7dc2bf49e", {
       cluster: "ap2",
@@ -60,14 +83,14 @@ const AdminChatUi = () => {
     };
   }, []);
 
-  // Scroll to the bottom whenever messages change
+  // Scroll to the bottom of the messages when they change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle sending messages
+  // Handle sending a new message
   const handleSendMessage = async () => {
-    if (!newMessage) return;
+    if (!newMessage.trim() || !decodedEmail) return; // Ensure we have a message and decoded email
 
     const sender = "ahmedmughal3182@gmail.com"; // Admin's email
     const receiver = decodedEmail; // Use the email set from incoming message
@@ -95,6 +118,7 @@ const AdminChatUi = () => {
   };
 
   const formattedDate = new Date().toLocaleDateString();
+
   return (
     <>
       {login && (
@@ -110,7 +134,7 @@ const AdminChatUi = () => {
               <hr className="border-t mt-2" />
             </div>
 
-            <div className="overflow-y-auto p-4 h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
+            <div className="p-4 overflow-y-auto h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
               {messages.map(({ sender, message, time }, index) => (
                 <div
                   key={index}
@@ -121,7 +145,7 @@ const AdminChatUi = () => {
                   }`}>
                   {sender === "ahmedmughal3182@gmail.com" ? (
                     <div className="flex items-start gap-2">
-                      <div className="bg-text text-white p-3 rounded-lg  shadow-md">
+                      <div className="bg-text text-white p-3 rounded-lg shadow-md">
                         <span className="text-xs gap-x-4 flex justify-between">
                           <p>Admin</p>
                           <p>{time}</p>
@@ -134,7 +158,7 @@ const AdminChatUi = () => {
                         src={CustomerCare}
                         width={40}
                         height={40}
-                        className="rounded-full "
+                        className="rounded-full"
                         alt="Admin Avatar"
                       />
                     </div>
@@ -144,10 +168,10 @@ const AdminChatUi = () => {
                         src={userCare}
                         width={40}
                         height={40}
-                        className="rounded-full "
+                        className="rounded-full"
                         alt="User Avatar"
                       />
-                      <div className="bg-lightGreen/40 p-3 rounded-lg  shadow-md">
+                      <div className="bg-lightGreen/40 p-3 rounded-lg shadow-md">
                         <span className="text-xs gap-x-4 flex justify-between">
                           <p>{sender}</p>
                           <p>{time}</p>

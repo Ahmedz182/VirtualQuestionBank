@@ -3,21 +3,29 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MdOutlineDeleteForever } from "react-icons/md";
+import { IoMdArrowForward } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import logo from "@/public/images/default_img.jpg";
 import { Menu, Skeleton } from "antd";
 import { Modal, Form, Input, message, Tooltip } from "antd";
 import jsPDF from "jspdf";
-import { HomeOutlined, DiffOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  HomeOutlined,
+  DiffOutlined,
+  UserAddOutlined,
+  MessageOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
 import Loading from "../loading";
 import AddUser from "./AddUser/page";
+
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -48,6 +56,11 @@ const Dashboard = () => {
       key: "all-user",
       icon: <UserAddOutlined />,
     },
+    {
+      label: "Messages",
+      key: "chat",
+      icon: <MessageOutlined />,
+    },
   ];
 
   const [current, setCurrent] = useState("dashboard");
@@ -60,12 +73,14 @@ const Dashboard = () => {
   const [Login, setLogin] = useState(false);
   const [Apiquiz, setApiQuiz] = useState([] || null);
   const [ApiSubject, setApiSubject] = useState([] || null);
+  const [email, setEmail] = useState(""); // State to hold email input
   // useAuth();
   const [form] = Form.useForm(); // Initialize form
 
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [apiAllUser, setApiAllUser] = useState([]);
+  const [Messages, setMessages] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [subjectId, setSubjectId] = useState(null); // Correct initialization of form
@@ -137,8 +152,10 @@ const Dashboard = () => {
   const dataLoad = async () => {
     try {
       const response = await axios.get("/api/v1/Quiz");
+      const responseMsg = await axios.get("/api/v1/messages?all=all");
 
       setApiQuiz(response.data.quiz);
+      setMessages(responseMsg.data);
     } catch (error) {
       console.error("Error loading quiz:", error);
     }
@@ -409,6 +426,15 @@ const Dashboard = () => {
     pdf.save("All-user-stats-report.pdf");
   };
 
+  const handleChatNow = () => {
+    if (email) {
+      router.push(`/Dashboard/Chat/${email}`); // Navigate to the chat page with the entered email
+    } else {
+      // Handle empty email case (optional)
+      alert("Please enter an email address");
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -425,7 +451,7 @@ const Dashboard = () => {
             items={items}
           />
 
-          <div className="text-text flex flex-col">
+          <div className="text-text flex flex-col min-h-[70dvh]">
             {current == "dashboard" && (
               <div className="min-h-[40dvh] px-10 sm:px-7">
                 <div>
@@ -761,6 +787,76 @@ const Dashboard = () => {
                   footer={null} // This hides the default buttons
                 >
                   <AddUser />
+                </Modal>
+              </div>
+            )}
+
+            {current === "chat" && (
+              <div className="overflow-x-auto mb-5">
+                <div>
+                  <div className="flex justify-end mb-5 mx-10">
+                    <button
+                      className="bg-midnight text-silver px-3 font-medium py-2 rounded-lg "
+                      onClick={showModal}>
+                      New Message
+                    </button>
+                  </div>
+                </div>
+                <p className="px-8 text-xl font-semibold">Recent Chats</p>
+                {Messages ? (
+                  <ul className="list-none p-0">
+                    {Messages.filter(
+                      ({ userEmail }) =>
+                        userEmail !== "ahmedmughal3182@gmail.com"
+                    ).map(({ userEmail }, index) => (
+                      <div
+                        key={userEmail}
+                        className={`rounded py-5 justify-around px-4 gap-x-2 overflow-hidden shadow-sm outline outline-1 outline-text/10
+                     hover:cursor-pointer hover:bg-text/5 transition duration-200 mx-10 my-2`}>
+                        <div className="flex justify-between">
+                          <p className="px-2 font-bold">
+                            {index + 1} : {userEmail}
+                          </p>
+                          <div className="flex justify-end flex-grow">
+                            <Tooltip title="Open Chat">
+                              <span className="hover:font-semibold">
+                                <IoMdArrowForward
+                                  onClick={() =>
+                                    router.push(`/Dashboard/Chat/${userEmail}`)
+                                  } // Pass email as a callback
+                                  className="text-2xl"
+                                />
+                              </span>
+                            </Tooltip>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </ul>
+                ) : (
+                  <Skeleton />
+                )}
+
+                <Modal
+                  open={isModalOpen}
+                  onOk={handleOk}
+                  onCancel={handleCancel}
+                  footer={null} // This hides the default buttons
+                >
+                  <div className="py-5 flex flex-col gap-2">
+                    <h3>Enter Email to Chat with : </h3>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter email"
+                    />
+                    <button
+                      className="bg-text text-white rounded px-3 py-2"
+                      onClick={handleChatNow}>
+                      Chat Now
+                    </button>
+                  </div>
                 </Modal>
               </div>
             )}

@@ -64,3 +64,8 @@ select {
 .imgAvtor {
   clip-path: circle(50% at 50% 51%);
 }
+
+.strokeText {
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}

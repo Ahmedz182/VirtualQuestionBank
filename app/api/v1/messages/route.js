@@ -22,17 +22,27 @@ export async function POST(req) {
             time: new Date(),
         };
 
-        // Use upsert to update or create a document with userEmail
-        const result = await Message.findOneAndUpdate(
-            { userEmail }, // Filter by userEmail at document root level
+        // 1. Update the sender's message document (for user messages)
+        await Message.findOneAndUpdate(
+            { userEmail: sender }, // Filter by sender's userEmail
             {
-                $setOnInsert: { userEmail }, // Ensure userEmail is set if document is new
-                $push: { messages: newMessage } // Add message to messages array
+                $setOnInsert: { userEmail: sender }, // Ensure sender's userEmail is set if document is new
+                $push: { messages: { ...newMessage, direction: "outgoing" } }, // Push the new message to the messages array
             },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
+            { new: true, upsert: true }
         );
 
-        return new Response(JSON.stringify(result), {
+        // 2. Update the receiver's message document (to include the incoming message)
+        await Message.findOneAndUpdate(
+            { userEmail: receiver }, // Filter by receiver's userEmail
+            {
+                $setOnInsert: { userEmail: receiver }, // Ensure receiver's userEmail is set if document is new
+                $push: { messages: { ...newMessage, direction: "incoming" } } // Save the message as received
+            },
+            { new: true, upsert: true }
+        );
+
+        return new Response(JSON.stringify({ message: "Message saved successfully" }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
@@ -49,7 +59,18 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const userEmail = searchParams.get("email"); // Extract email from query parameters
+        const fetchAll = searchParams.get("all"); // Extract email from query parameters
+        // If 'all' is passed, fetch all messages
+        if (fetchAll === "all") {
+            const allMessages = await Message.find(); // Fetch all messages from the database
 
+            return new Response(JSON.stringify(allMessages), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        // Ensure an email is provided if not fetching all
         if (!userEmail) {
             return new Response("Email parameter is required", { status: 400 });
         }

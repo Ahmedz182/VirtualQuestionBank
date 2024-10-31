@@ -141,17 +141,9 @@ const Nav = () => {
         </Link>
       ),
     },
+
     {
       key: "3",
-      icon: <MessageOutlined />,
-      label: (
-        <Link href="/Dashboard/Chat" className="text-sm font-semibold">
-          Live Chat
-        </Link>
-      ),
-    },
-    {
-      key: "4",
       icon: <LogoutOutlined />,
       danger: true,
       label: (

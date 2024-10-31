@@ -10,20 +10,30 @@ export async function POST(req) {
 
         const { message, sender, receiver } = await req.json();
 
-        // Save the message in the database under the user's email
-        const user = await Message.findOneAndUpdate(
+        // Create a new message object
+        const newMessage = {
+            message,
+            sender,
+            receiver,
+            time: new Date(),
+        };
+
+        // 1. Save the message in the sender's database entry
+        await Message.findOneAndUpdate(
             { userEmail: sender }, // Find the user by sender's email
-            { $push: { messages: { message, sender, receiver, time: new Date() } } }, // Push the new message into the messages array
+            { $push: { messages: { ...newMessage, direction: "outgoing" } } }, // Save as an outgoing message
+            { upsert: true, new: true } // Create the document if it doesn't exist, and return the new document
+        );
+
+        // 2. Save the message in the receiver's database entry
+        await Message.findOneAndUpdate(
+            { userEmail: receiver }, // Find the user by receiver's email
+            { $push: { messages: { ...newMessage, direction: "incoming" } } }, // Save as an incoming message
             { upsert: true, new: true } // Create the document if it doesn't exist, and return the new document
         );
 
         // Trigger the Pusher event with the message details
-        await pusher.trigger("my-channel", "my-event", {
-            message: message,
-            sender: sender,
-            receiver: receiver,
-            time: new Date(),
-        });
+        await pusher.trigger("my-channel", "my-event", newMessage);
 
         return new Response("Message sent and saved successfully", { status: 200 });
     } catch (error) {
