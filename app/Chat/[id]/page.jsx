@@ -10,24 +10,25 @@ import Pusher from "pusher-js";
 import axios from "axios";
 
 const ChatUi = () => {
-  const { id } = useParams();
-  const [messages, setMessages] = useState([]);
-  const [login, setLogin] = useState(false);
-  const [newMessage, setNewMessage] = useState("");
-  const messagesEndRef = useRef(null);
-  const router = useRouter();
+  const { id } = useParams(); // Get chat ID from URL params
+  const [messages, setMessages] = useState([]); // Store chat messages
+  const [login, setLogin] = useState(false); // User login status
+  const [newMessage, setNewMessage] = useState(""); // New message input
+  const messagesEndRef = useRef(null); // Reference for scrolling to bottom
+  const router = useRouter(); // Router instance for navigation
 
+  // Check if user is logged in
   useEffect(() => {
     const checkLogin = localStorage.getItem("UserLogin");
     if (!checkLogin) {
-      setLogin(false);
-      alert("Please Login first to chat ");
+      alert("Please Login first to chat");
       router.push("/auth/login");
     } else {
       setLogin(true);
     }
   }, [router]);
 
+  // Fetch messages for the logged-in user
   useEffect(() => {
     const fetchMessages = async () => {
       const userDetail = JSON.parse(localStorage.getItem("userDetail"));
@@ -42,9 +43,7 @@ const ChatUi = () => {
         const response = await axios.get("/api/v1/messages", {
           params: { email: userEmail },
         });
-
-        console.log("Fetched messages:", response.data);
-        setMessages(response.data);
+        setMessages(response.data?.messages || []);
       } catch (error) {
         console.error(
           "Error fetching messages:",
@@ -56,6 +55,7 @@ const ChatUi = () => {
     fetchMessages();
   }, []);
 
+  // Initialize Pusher for real-time messaging
   useEffect(() => {
     const pusher = new Pusher("a788034843d7dc2bf49e", { cluster: "ap2" });
     const channel = pusher.subscribe("my-channel");
@@ -85,18 +85,22 @@ const ChatUi = () => {
     };
   }, []);
 
+  // Scroll to the bottom of the messages when they change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Handle sending a new message
   const handleSendMessage = async () => {
     if (!newMessage) return;
 
-    const sender = JSON.parse(localStorage.getItem("userDetail"))?.email;
-    const receiver = "ahmedmughal3182@gmail.com";
+    const userDetail = JSON.parse(localStorage.getItem("userDetail"));
+    const sender = userDetail?.email;
+    const receiver = "ahmedmughal3182@gmail.com"; // Replace with dynamic receiver if needed
 
     try {
       await axios.post("/api/v1/Pusher", {
+        userEmail: sender,
         message: newMessage,
         sender,
         receiver,
@@ -107,7 +111,7 @@ const ChatUi = () => {
         { sender, message: newMessage, time: new Date().toISOString() },
       ]);
 
-      setNewMessage("");
+      setNewMessage(""); // Clear the input field
     } catch (error) {
       console.error(
         "Error sending message:",
@@ -116,6 +120,7 @@ const ChatUi = () => {
     }
   };
 
+  // Format timestamp for message display
   const formatTimestamp = (timestamp) => {
     return new Date(timestamp).toLocaleString("en-US", {
       year: "numeric",
@@ -134,7 +139,7 @@ const ChatUi = () => {
     <>
       {login && (
         <div className="p-10 flex items-center justify-center sm:items-start">
-          <div className="bg-white h-screen sm:h-[85dvh] w-[90vw] border  rounded flex flex-col">
+          <div className="bg-white h-screen sm:h-[85dvh] w-[90dvw] border rounded flex flex-col">
             <div className="p-4">
               <div className="flex justify-between">
                 <p className="font-bold text-lg">Live Chat</p>
@@ -143,7 +148,7 @@ const ChatUi = () => {
               <hr className="border-t mt-2" />
             </div>
 
-            <div className="overflow-y-auto p-4 h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
+            <div className="p-4 overflow-y-scroll h-[80vh] sm:h-[60vh] flex flex-col gap-y-4 ">
               {messages.map(({ sender, message, time }, index) => (
                 <div
                   key={index}
@@ -152,41 +157,50 @@ const ChatUi = () => {
                       ? "justify-start"
                       : "justify-end"
                   }`}>
-                  {sender === "ahmedmughal3182@gmail.com" ? (
-                    <div className="flex items-start gap-2">
-                      <Image
-                        src={CustomerCare}
-                        width={40}
-                        height={40}
-                        className="rounded-full bg-gray-200"
-                        alt="Admin Avatar"
-                      />
-                      <div className="bg-text text-white p-3 rounded-lg max-w-xs shadow-md">
-                        <span className="text-xs gap-x-4 flex justify-between">
-                          <p>Admin</p>
-                          <p>{formatTimestamp(time)}</p>
-                        </span>
-                        <p>{message}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-end gap-2">
-                      <div className=" p-3 rounded-lg max-w-xs shadow-md">
-                        <span className="text-xs gap-x-4 flex justify-between">
-                          <p>User</p>
-                          <p>{formatTimestamp(time)}</p>
-                        </span>
-                        <p>{message}</p>
-                      </div>
-                      <Image
-                        src={userCare}
-                        width={40}
-                        height={40}
-                        className="rounded-full bg-gray-200"
-                        alt="User Avatar"
-                      />
-                    </div>
-                  )}
+                  <div
+                    className={`flex ${
+                      sender === "ahmedmughal3182@gmail.com"
+                        ? "items-start"
+                        : "items-end"
+                    } gap-2`}>
+                    {sender === "ahmedmughal3182@gmail.com" ? (
+                      <>
+                        <Image
+                          src={CustomerCare}
+                          width={40}
+                          height={40}
+                          className="rounded-full bg-gray-200"
+                          alt="Admin Avatar"
+                        />
+                        <div className="bg-text text-white p-3 rounded-lg shadow-md ">
+                          <span className="text-xs gap-x-4 flex justify-between">
+                            <p>Admin</p>
+                            <p>{formatTimestamp(time)}</p>
+                          </span>
+                          <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
+                            {message}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className=" p-3 rounded-lg shadow-md min-w-96  ">
+                          <span className="text-xs gap-x-4 flex justify-between">
+                            <p>User</p>
+                            <p>{formatTimestamp(time)}</p>
+                          </span>
+                          <p className="break-words max-w-[75dvw]">{message}</p>
+                        </div>
+                        <Image
+                          src={userCare}
+                          width={40}
+                          height={40}
+                          className="rounded-full bg-gray-200"
+                          alt="User Avatar"
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
               <div ref={messagesEndRef} />
@@ -208,7 +222,7 @@ const ChatUi = () => {
               />
               <Tooltip title="Send">
                 <FiSend
-                  className="text-2xl  cursor-pointer"
+                  className="text-2xl cursor-pointer"
                   onClick={handleSendMessage}
                 />
               </Tooltip>

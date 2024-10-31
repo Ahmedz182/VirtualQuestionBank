@@ -121,18 +121,20 @@ const AdminChatUi = () => {
                   }`}>
                   {sender === "ahmedmughal3182@gmail.com" ? (
                     <div className="flex items-start gap-2">
-                      <div className="bg-text text-white p-3 rounded-lg max-w-xs shadow-md">
+                      <div className="bg-text text-white p-3 rounded-lg  shadow-md">
                         <span className="text-xs gap-x-4 flex justify-between">
                           <p>Admin</p>
                           <p>{time}</p>
                         </span>
-                        <p>{message}</p>
+                        <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
+                          {message}
+                        </p>
                       </div>
                       <Image
                         src={CustomerCare}
                         width={40}
                         height={40}
-                        className="rounded-full bg-gray-200"
+                        className="rounded-full "
                         alt="Admin Avatar"
                       />
                     </div>
@@ -142,15 +144,17 @@ const AdminChatUi = () => {
                         src={userCare}
                         width={40}
                         height={40}
-                        className="rounded-full bg-gray-200"
+                        className="rounded-full "
                         alt="User Avatar"
                       />
-                      <div className="bg-lightGreen/40 p-3 rounded-lg max-w-xs shadow-md">
+                      <div className="bg-lightGreen/40 p-3 rounded-lg  shadow-md">
                         <span className="text-xs gap-x-4 flex justify-between">
                           <p>{sender}</p>
                           <p>{time}</p>
                         </span>
-                        <p>{message}</p>
+                        <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
+                          {message}
+                        </p>
                       </div>
                     </div>
                   )}

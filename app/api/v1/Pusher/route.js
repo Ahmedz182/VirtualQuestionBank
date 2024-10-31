@@ -1,7 +1,6 @@
-// app/api/v1/Pusher/route.js
-import pusher from "@/app/pusher";
-import Message from "@/app/lib/models/ChatModel";
-import connectDB from "@/app/lib/config/mongodb";
+import pusher from "@/app/pusher"; // Import your Pusher instance
+import Message from "@/app/lib/models/ChatModel"; // Import your Mongoose model
+import connectDB from "@/app/lib/config/mongodb"; // Import your MongoDB connection
 
 // Handler for the POST request
 export async function POST(req) {
@@ -11,20 +10,19 @@ export async function POST(req) {
 
         const { message, sender, receiver } = await req.json();
 
-        // Save the message in the database
-        const savedMessage = await Message.create({
-            message,
-            sender,
-            receiver,
-            time: new Date(),
-        });
+        // Save the message in the database under the user's email
+        const user = await Message.findOneAndUpdate(
+            { userEmail: sender }, // Find the user by sender's email
+            { $push: { messages: { message, sender, receiver, time: new Date() } } }, // Push the new message into the messages array
+            { upsert: true, new: true } // Create the document if it doesn't exist, and return the new document
+        );
 
         // Trigger the Pusher event with the message details
         await pusher.trigger("my-channel", "my-event", {
-            message: savedMessage.message,
-            sender: savedMessage.sender,
-            receiver: savedMessage.receiver,
-            time: savedMessage.time,
+            message: message,
+            sender: sender,
+            receiver: receiver,
+            time: new Date(),
         });
 
         return new Response("Message sent and saved successfully", { status: 200 });
