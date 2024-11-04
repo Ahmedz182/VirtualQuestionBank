@@ -13,22 +13,12 @@ import Cookies from "js-cookie";
 const AdminChatUi = () => {
   const { id } = useParams(); // Get user ID from URL params
   const [messages, setMessages] = useState([]); // Store chat messages
-  const [login, setLogin] = useState(false); // Admin login status
   const [decodedEmail, setDecodedEmail] = useState(null); // Decoded email from the URL
   const [newMessage, setNewMessage] = useState(""); // New message input
   const messagesEndRef = useRef(null); // Reference for scrolling to bottom
   const router = useRouter(); // Router instance for navigation
 
-  // Check if admin is logged in
-  // useEffect(() => {
-  //   const checkLogin = Cookies.get("Login");
-  //   if (!checkLogin) {
-  //     alert("Please Login first to chat");
-  //     router.push("/auth/admin");
-  //   } else {
-  //     setLogin(true);
-  //   }
-  // }, [router]);
+  //
 
   // Decode the email from the URL
   useEffect(() => {
@@ -122,96 +112,94 @@ const AdminChatUi = () => {
 
   return (
     <>
-      {login && (
-        <div className="p-10 flex items-center justify-center sm:items-start">
-          <div className="bg-white h-screen sm:h-[85dvh] w-[90vw] border rounded flex flex-col">
-            <div className="p-4">
-              <div className="flex justify-between">
-                <p className="font-bold text-lg">
-                  Admin Live Chat with {decodedEmail}
-                </p>
-                <p>{formattedDate}</p>
+      <div className="p-10 flex items-center justify-center sm:items-start">
+        <div className="bg-white h-screen sm:h-[85dvh] w-[90vw] border rounded flex flex-col">
+          <div className="p-4">
+            <div className="flex justify-between">
+              <p className="font-bold text-lg">
+                Admin Live Chat with {decodedEmail}
+              </p>
+              <p>{formattedDate}</p>
+            </div>
+            <hr className="border-t mt-2" />
+          </div>
+
+          <div className="p-4 overflow-y-auto h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
+            {messages.map(({ sender, message, time }, index) => (
+              <div
+                key={index}
+                className={`flex ${
+                  sender === "ahmedmughal3182@gmail.com"
+                    ? "justify-end"
+                    : "justify-start"
+                }`}>
+                {sender === "ahmedmughal3182@gmail.com" ? (
+                  <div className="flex items-start gap-2">
+                    <div className="bg-text text-white p-3 rounded-lg shadow-md">
+                      <span className="text-xs gap-x-4 flex justify-between">
+                        <p>Admin</p>
+                        <p>{time}</p>
+                      </span>
+                      <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
+                        {message}
+                      </p>
+                    </div>
+                    <Image
+                      src={CustomerCare}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                      alt="Admin Avatar"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-end gap-2">
+                    <Image
+                      src={userCare}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                      alt="User Avatar"
+                    />
+                    <div className="bg-lightGreen/40 p-3 rounded-lg shadow-md">
+                      <span className="text-xs gap-x-4 flex justify-between">
+                        <p>{sender}</p>
+                        <p>{time}</p>
+                      </span>
+                      <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
+                        {message}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
-              <hr className="border-t mt-2" />
-            </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
 
-            <div className="p-4 overflow-y-auto h-[80vh] sm:h-[60vh] flex flex-col gap-y-4">
-              {messages.map(({ sender, message, time }, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    sender === "ahmedmughal3182@gmail.com"
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}>
-                  {sender === "ahmedmughal3182@gmail.com" ? (
-                    <div className="flex items-start gap-2">
-                      <div className="bg-text text-white p-3 rounded-lg shadow-md">
-                        <span className="text-xs gap-x-4 flex justify-between">
-                          <p>Admin</p>
-                          <p>{time}</p>
-                        </span>
-                        <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
-                          {message}
-                        </p>
-                      </div>
-                      <Image
-                        src={CustomerCare}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                        alt="Admin Avatar"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-end gap-2">
-                      <Image
-                        src={userCare}
-                        width={40}
-                        height={40}
-                        className="rounded-full"
-                        alt="User Avatar"
-                      />
-                      <div className="bg-lightGreen/40 p-3 rounded-lg shadow-md">
-                        <span className="text-xs gap-x-4 flex justify-between">
-                          <p>{sender}</p>
-                          <p>{time}</p>
-                        </span>
-                        <p className="whitespace-pre-wrap break-words max-w-[75dvw]">
-                          {message}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </div>
-
-            <div className="p-4 h-24 flex items-center gap-x-2 border-t">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                rows={1}
-                className="w-full p-2 border rounded focus:outline-none"
-                placeholder="Enter your message here..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
+          <div className="p-4 h-24 flex items-center gap-x-2 border-t">
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              rows={1}
+              className="w-full p-2 border rounded focus:outline-none"
+              placeholder="Enter your message here..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+            />
+            <Tooltip title="Send">
+              <FiSend
+                className="text-2xl cursor-pointer"
+                onClick={handleSendMessage}
               />
-              <Tooltip title="Send">
-                <FiSend
-                  className="text-2xl cursor-pointer"
-                  onClick={handleSendMessage}
-                />
-              </Tooltip>
-            </div>
+            </Tooltip>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
