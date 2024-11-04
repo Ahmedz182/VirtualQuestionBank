@@ -71,9 +71,3 @@ Contributions are welcome! To contribute:
 
 License
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-Simply paste this text into a new `README.md` file in your project directory. Let me know if you need further assistance! &#8203;:contentReference[oaicite:0]{index=0}&#8203;
-
-```
-
-```
