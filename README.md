@@ -35,8 +35,11 @@ A web-based platform designed to enhance exam preparation by providing a compreh
    ```bash
    git clone https://github.com/ahmedz182/virtual-question-bank.git
    cd virtual-question-bank
+   
 2. Install dependencies:
+    ```bash
    npm install
+    
 3. Set up environment variables:
     Create a .env file and add your MongoDB URI, session secrets, and any other necessary environment variables.
 4.Start the development server:
