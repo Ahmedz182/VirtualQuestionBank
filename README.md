@@ -51,12 +51,14 @@ A web-based platform designed to enhance exam preparation by providing a compreh
 
 ```bash
  npm run dev
+```
+
 5. Access the project at http://localhost:3000.
 
 Usage
- 1 Admin: Log in to manage users, review questions, and generate reports.
- 2 Moderator: Add or approve questions and provide support to students.
- 3 Student: Register to access practice quizzes, take exams, and track progress.
+1 Admin: Log in to manage users, review questions, and generate reports.
+2 Moderator: Add or approve questions and provide support to students.
+3 Student: Register to access practice quizzes, take exams, and track progress.
 
 Contributing
 Contributions are welcome! To contribute:
@@ -71,4 +73,7 @@ License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 Simply paste this text into a new `README.md` file in your project directory. Let me know if you need further assistance! &#8203;:contentReference[oaicite:0]{index=0}&#8203;
+
+```
+
 ```
