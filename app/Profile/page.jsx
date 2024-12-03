@@ -80,13 +80,20 @@ const Profile = () => {
 
     // Add user performance section
     pdf.setFontSize(12);
+
+    // Ensure proper fallback for lastPlayed
     pdf.text(
-      `Last Played Score :${UserPerformance[0]?.lastPlayed} || "N/A" `,
+      `Last Played Quiz: ${UserPerformance[0]?.lastPlayed ?? "N/A"}`,
       20,
       90
     );
 
-    pdf.text(`${UserPerformance[0]?.lastPlayedScore || "N/A"}%`, 120, 100);
+    // Ensure proper fallback for lastPlayedScore
+    pdf.text(
+      `Last Played Score: ${UserPerformance[0]?.lastPlayedScore ?? "N/A"}%`,
+      120,
+      100
+    );
 
     // Add total stats section
     pdf.text("Total Stats", 20, 120);
