@@ -80,13 +80,12 @@ const Profile = () => {
 
     // Add user performance section
     pdf.setFontSize(12);
-    pdf.text("Last Played Score", 20, 80);
+    pdf.text(
+      `Last Played Score :${UserPerformance[0]?.lastPlayed} || "N/A" `,
+      20,
+      90
+    );
 
-    // Add the performance table headers
-    pdf.text("Last Played Quiz", 20, 90);
-
-    // Add the performance data
-    pdf.text(UserPerformance[0]?.lastPlayed || "N/A", 20, 100);
     pdf.text(`${UserPerformance[0]?.lastPlayedScore || "N/A"}%`, 120, 100);
 
     // Add total stats section
