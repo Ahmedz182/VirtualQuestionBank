@@ -24,10 +24,7 @@ const SubjectId = () => {
     loadQuiz();
   }, []); // Removed extra comma after id
 
-  // Log when quizData is updated
-  useEffect(() => {
-    console.log("quizData updated:", quizData);
-  }, [quizData]);
+ 
 
   const loadQuiz = async () => {
     try {
