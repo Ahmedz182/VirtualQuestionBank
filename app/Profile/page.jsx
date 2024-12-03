@@ -84,7 +84,6 @@ const Profile = () => {
 
     // Add the performance table headers
     pdf.text("Last Played Quiz", 20, 90);
-    pdf.text("Last Played Score", 120, 90);
 
     // Add the performance data
     pdf.text(UserPerformance[0]?.lastPlayed || "N/A", 20, 100);
