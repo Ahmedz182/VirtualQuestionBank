@@ -91,7 +91,7 @@ const Profile = () => {
     // Ensure proper fallback for lastPlayedScore
     pdf.text(
       `Last Played Score: ${UserPerformance[0]?.lastPlayedScore ?? "N/A"}%`,
-      120,
+      20,
       100
     );
 
